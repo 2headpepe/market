@@ -1,0 +1,26 @@
+.Modal {
+  min-height: 200%;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  display: flex;
+  /* align-items: center; */
+  justify-content: center;
+
+  background-color: rgba(49, 49, 49, 0.8);
+  z-index: 1;
+}
+
+.Modal--content {
+  margin-top: 5vh;
+  line-height: 1.4;
+  padding: 14px 28px;
+  border-radius: 3px;
+  background: white;
+
+  max-width: 90%;
+  margin-bottom: auto;
+}

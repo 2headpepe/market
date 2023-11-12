@@ -1,0 +1,17 @@
+.sortWrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: absolute;
+  right: 50px;
+  top: 150px;
+}
+
+.filterWrapper {
+  display: flex;
+  gap: 10px;
+  align-items: center;
+  position: absolute;
+  right: 50px;
+  top: 200px;
+}

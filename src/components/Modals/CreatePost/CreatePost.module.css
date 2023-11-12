@@ -1,0 +1,20 @@
+.createPostWrapper {
+  display: flex;
+  align-items: center;
+  flex-direction: column;
+  gap: 20px;
+  max-height: 500px;
+}
+
+.inputImg {
+  width: 200px;
+
+  margin: 20px 0px;
+
+  background-color: grey;
+  text-align: center;
+}
+
+.infoWrapper {
+  margin-left: 40px;
+}

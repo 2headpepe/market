@@ -1,0 +1,48 @@
+.NavBar {
+  height: 10vh;
+  width: 100vw;
+  display: flex;
+  justify-content: space-around;
+  align-items: center;
+
+  box-shadow: 1px 1px 10px 10px rgba(0, 0, 0, 0.1);
+}
+
+.NavBar > .left {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.NavBar > .search {
+  width: 50vw;
+  height: 30px;
+  border-radius: 10px;
+  background-color: #ffffff;
+}
+
+.NavBar > .infoWrapper {
+  display: flex;
+  gap: 24px;
+  align-items: center;
+
+  border-radius: 48px;
+}
+.infoWrapper > .icon {
+  background: linear-gradient(to right, #bfe9ff, #ff6e7f);
+  height: 48px;
+  width: 120px;
+  border-radius: 48px;
+
+  text-align: center;
+  line-height: 48px;
+}
+.infoWrapper .info {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+}
+
+.infoWrapper .photo {
+  border-radius: 50px;
+}

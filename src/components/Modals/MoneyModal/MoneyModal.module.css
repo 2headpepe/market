@@ -1,0 +1,31 @@
+.Modal {
+  min-height: 100vh;
+
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+
+  background-color: rgba(49, 49, 49, 0.8);
+}
+
+.modalContent {
+  position: absolute;
+  right: 200px;
+  top: 100px;
+
+  line-height: 1.4;
+  padding: 14px 28px;
+  border-radius: 3px;
+  background: #f1f1f1;
+}
+
+.buttonWrapper {
+  margin-top: 20px;
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}
+.input {
+  width: 200px;
+}

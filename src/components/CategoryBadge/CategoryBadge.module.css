@@ -1,0 +1,19 @@
+.colorful {
+  /* width: 256px; */
+  /* height: 256px; */
+
+  border-radius: 20px;
+
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  color: white;
+}
+
+.hi {
+  color: rgba(41, 163, 53, 1);
+  color: rgba(73, 198, 85, 1);
+  color: rgba(129, 218, 138, 1);
+  color: rgba(168, 218, 173, 1);
+}
