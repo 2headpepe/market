@@ -11,4 +11,4 @@ COPY . .
 RUN npm run build
 # Запускаем приложение на порту 3000
 EXPOSE 3000
-CMD [ "npm", "start" ]
+CMD [ "npm", "run", "dev" ]
