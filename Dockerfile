@@ -7,8 +7,6 @@ COPY package*.json ./
 RUN npm install
 # Копируем исходный код в контейнер
 COPY . .
-# Собираем приложение
-RUN npm run build
 # Запускаем приложение на порту 3000
 EXPOSE 3000
 CMD [ "npm", "run", "dev" ]
