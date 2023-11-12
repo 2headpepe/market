@@ -45,11 +45,12 @@ const LoginPage: React.FC = () => {
           </Form.Item>
 
           <Form.Item
+          
             label="Password"
             name="password"
             rules={[{ required: true, message: "Please input your email" }]}
           >
-            <Input></Input>
+            <Input.Password></Input.Password>
           </Form.Item>
 
           <Form.Item>
