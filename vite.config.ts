@@ -5,7 +5,7 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   server: {
     proxy: {
-      '/api': 'http://nedomarket:8003',
+      '': 'http://nedomarket:8003',
     },
     host: true,
     port: 3000, // This is the port which we will use in docker
