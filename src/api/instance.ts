@@ -8,6 +8,11 @@ export const axiosInstance = axios.create()
 
 const urlsSkipAuth = [Endpoints.AUTH.LOGIN, Endpoints.AUTH.REFRESH, Endpoints.AUTH.LOGOUT]
 
+
+if (import.meta.env.DEV) {
+  axios.defaults.baseURL = '/api'
+}
+
 axiosInstance.interceptors.request.use(async (config) => {
     if (config.url && urlsSkipAuth.includes(config.url)) {
         return config
