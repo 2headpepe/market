@@ -5,15 +5,14 @@ import react from '@vitejs/plugin-react'
 export default defineConfig({
   server: {
     proxy: {
-      '': 'http://nedomarket:8003',
+      '/api': {
+        target:'http://nedomarket:8003',
+        changeOrigin:true,
+      },
     },
     host: true,
     port: 3000, // This is the port which we will use in docker
     // Thanks @sergiomoura for the window fix
-    // add the next lines if you're using windows and hot reload doesn't work
-    watch: {
-      usePolling: true
-    }
   },
   plugins: [react()],
 })
