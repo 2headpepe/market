@@ -1,4 +1,4 @@
-import axios, { AxiosError, AxiosHeaders } from "axios";
+import axios from "axios";
 
 import Endpoints from './endpoints'
 import { store } from "../store";

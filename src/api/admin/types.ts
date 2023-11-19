@@ -1,5 +1,8 @@
-export type IUsers = IUsersResponse;
-export type IUsersResponse = IUser[];
+export type IUsers = IPaginationUsersResponse;
+export type IPaginationUsersResponse = {
+  totalPages:number;
+  userResponseList:IUser[];
+}
 export interface IUser{
   id: number,
   firstname: string,
@@ -31,7 +34,10 @@ export interface IDeleteWithdrawRequest{
 }
 
 
-export type IGetWithdrawsResponse = IWithdraw[];
+export type IGetWithdrawsResponse ={
+  totalPages:number;
+  withdrawResponseList:IWithdraw[];
+}
 
 export interface IWithdraw{
   id: number,
@@ -40,7 +46,10 @@ export interface IWithdraw{
 }
 
 
-export type IGetDepositsResponse = IDeposit[];
+export type IGetDepositsResponse = {
+  totalPages:number;
+  depositResponseList:IDeposit[];
+}
 
 export type IDeposit = IWithdraw;
 

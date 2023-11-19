@@ -1,9 +1,9 @@
 import { AxiosPromise } from "axios";
 import Endpoints from "../endpoints";
 import { axiosInstance } from "../instance";
-import { ICreateCategoryRequest, IDeleteCategoryRequest, IDeleteDepositRequest, IDeleteUserRequest, IDeleteWithdrawRequest, IGetDepositsResponse, IGetWithdrawsResponse, IUsersResponse } from "./types";
+import { ICreateCategoryRequest, IDeleteCategoryRequest, IDeleteDepositRequest, IDeleteUserRequest, IDeleteWithdrawRequest, IGetDepositsResponse, IGetWithdrawsResponse, IPaginationUsersResponse, } from "./types";
 
-export const getUsers = (): AxiosPromise<IUsersResponse> => axiosInstance.get(Endpoints.ADMIN.GET_USERS);
+export const getUsers = (): AxiosPromise<IPaginationUsersResponse> => axiosInstance.get(Endpoints.ADMIN.GET_USERS);
 
 export const deleteUser = (data:IDeleteUserRequest): AxiosPromise<void> => axiosInstance.delete(Endpoints.ADMIN.DELETE_USER+data.id);
 

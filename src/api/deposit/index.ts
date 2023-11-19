@@ -1,9 +1,9 @@
 import { AxiosPromise } from "axios";
 import Endpoints from "../endpoints";
 import { axiosInstance } from "../instance";
-import { IDepositRequest} from "../deposit/types";
+import { IPaginationDepositRequest} from "../deposit/types";
 
-export const deposit = (params:IDepositRequest): AxiosPromise<void> =>{
+export const deposit = (params:IPaginationDepositRequest): AxiosPromise<void> =>{
   return axiosInstance.post(Endpoints.DEPOSIT,params);
 }
 

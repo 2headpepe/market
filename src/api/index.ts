@@ -6,6 +6,7 @@ import * as admin from "./admin"
 import * as withdraw from "./withdraw"
 import * as deposit from "./deposit"
 import * as category from "./category"
+import * as user from "./user"
 
 const api = {
   auth,
@@ -15,7 +16,8 @@ const api = {
   admin,
   withdraw,
   deposit,
-  category
+  category,
+  user
 };
 
 export default api;

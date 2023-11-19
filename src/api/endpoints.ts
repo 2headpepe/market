@@ -4,7 +4,6 @@ const Endpoints = {
     REGISTER: "/api/auth/register",
     REFRESH: "/refresh",
     LOGOUT: "/logout",
-    PROFILE: "/api/users/profile",
   },
   LISTINGS:{
     MY_LISTINGS:"/api/listings/myListings",
@@ -19,8 +18,14 @@ const Endpoints = {
     LISTING_IMAGES:"/api/images"
   },
   ORDERS:{
-    SELLS:"/api/orders/sells",
-    BUYS:"/api/orders/buys"
+    DISAPPROVE:"/api/orders/disapprove/",
+    APPROVE:"/api/orders/approve/",
+    DISAPPROVED_SELLS:"/api/orders/disapprove-sells",
+    DISAPPROVED_BUYS:"/api/orders/disapprove-buys",
+    APPROVED_SELLS:"/api/orders/approved-sells",
+    APPROVED_BUYS:"/api/orders/approved-buys",
+    ACTIVE_SELLS:"/api/orders/active-sells",
+    ACTIVE_BUYS:"/api/orders/active-buys",
   },
   ADMIN:{
     GET_USERS:"/api/admin/users",
@@ -37,6 +42,10 @@ const Endpoints = {
   CATEGORY:{
     GET_CATEGORIES:"/api/categories",
     GET_CATEGORY:"/api/categories/",
+  },
+  USER:{
+    GET_USER:"/api/users/",
+    PROFILE: "/api/users/profile",
   }
 };
 

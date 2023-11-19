@@ -1,7 +1,9 @@
 //login
 
-export interface IDepositRequest {
+export interface IPaginationDepositRequest {
   sum:number;
 }
+
+
 
   

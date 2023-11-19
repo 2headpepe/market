@@ -1,9 +1,17 @@
-export type IGetListingsResponse = IListings;
+import { IPaginationParams } from "../types";
+
+export type IGetListingsResponse = IPaginationListings;
+
+export interface IPaginationListings{
+  totalPages:number;
+  listingResponseList: IListings;
+}
+
 export interface IListing {
   id: number,
   title: string,
   text: string,
-  categoryId: string,
+  categoryId: number,
   price: 0,
   city: string,
   postDate: string,
@@ -31,7 +39,10 @@ export type IDeleteListingRequest = IBuyListingRequest;
 export type IGetUserListingsRequest = IGetListingRequest;
 
 export interface ISearchListingsRequest{
-  categoryId?:number;
-  priceOrder?:boolean;
-  postDateOrder:boolean;
+  categoryId?:number|null;
+  sortBy?:'price'|'postDate';
+  asc?:boolean;
+  offset?:number;
+  limit?:number;
 }
+export type IGetMyListingsRequest = IPaginationParams;

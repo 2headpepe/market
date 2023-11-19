@@ -1,5 +1,17 @@
-export type IGetBuysResponse = IListings;
+export type IGetBuysResponse = IPaginationOrders
 
+
+export interface IPaginationOrders{
+  totalPages:number;
+  orderResponseList: {
+    id: number,
+    sellerId: number,
+    buyerId: number,
+    listingId: number,
+    sum: number,
+    status: string,
+  }
+}
 
 export type IGetSellsResponse = IGetBuysResponse;
 export interface IListing
