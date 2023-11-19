@@ -1,7 +1,5 @@
-import React from "react";
 import Card from "../Cards";
 import styles from "./PostList.module.css";
-import { imagesData } from "../../data";
 import { ImagesState } from "../../store/images/imagesReducer";
 
 export interface PostListProps {
@@ -13,7 +11,7 @@ export interface PostListProps {
     postDate: string;
     text: string;
     price: number;
-  }[];
+  }[]|null;
   images: ImagesState;
 }
 
@@ -22,7 +20,7 @@ const PostList = ({ posts,images }: PostListProps) => {
   // console.log(posts);
   return (
     <div className={styles.listWrapper}>
-      {posts.length > 0 ? (
+      {posts && posts.length > 0 ? (
         posts.map((e) => {
           return <div className={styles.postWrapper} key={e.id}>
             <Card posts = {e} images = {images[e.id]?images[e.id].images:null}></Card>

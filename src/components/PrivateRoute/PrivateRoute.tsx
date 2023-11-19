@@ -7,13 +7,12 @@ interface PrivateRouteProps {
 }
 
 const PrivateRoute = ({ children }: PrivateRouteProps) => {
+  if(localStorage.getItem('token')) return children;
+
   const loggedIn = useSelector(
     (state: IRootState) => !!state.auth.authData.accessToken
   );
-  //   useSelector((state: IRootState) =>
-  //     console.log(state.auth.authData.accessToken)
-  //   );
-  console.log(loggedIn);
+
   return <>{loggedIn ? children : <Navigate to="/login" />}</>;
 };
 

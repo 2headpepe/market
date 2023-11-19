@@ -3,25 +3,50 @@ import { Button, Form, Input, Select } from "antd";
 import UploadPhoto from "../../UploadPhoto/UploadPhoto";
 import Modal from "../Modal/Modal";
 import ModalProps from "../ModalTypes";
-import PhotoModal from "../PhotoModal/PhotoModal";
-import React from "react";
+import React, { useEffect } from "react";
+import { useSelector } from "react-redux";
+import { IRootState, useAppDispatch } from "../../../store";
+import { ICategory } from "../../../api/category/types";
+import { getCategories } from "../../../store/category/actionCreators";
+import { createListing, getMyListings } from "../../../store/listings/actionCreators";
 
-interface CreatePostProps extends ModalProps {
-  createPost: Function;
-}
 
-const CreatePost = (props: CreatePostProps) => {
+const CreatePost = (props: ModalProps) => {
   const [photoModal, setPhotoModal] = React.useState(false);
-  const [value, setValue] = React.useState("");
+  const [value, setValue] = React.useState<any>("");
+  const categories = useSelector((state: IRootState) => state.category.categoriesData.categories);
 
-  function goToSecondStep() {
+  const categoryOptions = categories ? categories.map((e: ICategory) => ({
+    value: e.id.toString(),
+    label: e.name,
+  })) : [{ value: '0', label: '...Choose...' }];
+
+  const [categoryId, setCategoryId] = React.useState(categoryOptions[0].value);
+
+  const onChangeCategory = (
+    selected: { value: string; label: string } | null
+  ) => {
+    setCategoryId(selected!.value);
+  };
+
+  const dispatch = useAppDispatch();
+
+  useEffect(() => {
+    dispatch(getCategories());
+  }, []);
+
+  function goToSecondStep(values: any) {
+    setValue(values);
     props.setModal(false);
     setPhotoModal(true);
   }
 
   function finish() {
     setPhotoModal(false);
-    props.createPost(value);
+
+    dispatch(createListing({...value,categoryId:+categoryId,price:+value.price})).then(()=>{
+      dispatch(getMyListings());
+    })
   }
 
   return (
@@ -30,7 +55,7 @@ const CreatePost = (props: CreatePostProps) => {
         <div className={styles.createPostWrapper}>
           <h1>Create post</h1>
 
-          <Form>
+          <Form onFinish={goToSecondStep}>
             <Form.Item
               label="Title"
               name="title"
@@ -40,35 +65,20 @@ const CreatePost = (props: CreatePostProps) => {
             </Form.Item>
             <Form.Item
               label="Description"
-              name="description"
+              name="text"
             >
               <Input></Input>
             </Form.Item>
             <Form.Item label="Category">
               <Select
-                options={[
-                  {
-                    value: 1,
-                    label: 1,
-                  },
-                  {
-                    value: 2,
-                    label: 2,
-                  },
-                  {
-                    value: 3,
-                    label: 3,
-                  },
-                  {
-                    value: 4,
-                    label: 4,
-                  },
-                  {
-                    value: 5,
-                    label: 5,
-                  },
-                ]}
-              ></Select>
+                options={categoryOptions}
+                defaultValue={categoryOptions[0]}
+                onChange={onChangeCategory}
+
+                className={styles.filterSelect}
+                id="filterSelect"
+
+              />
             </Form.Item>
             <Form.Item
               label="Price"
@@ -76,14 +86,15 @@ const CreatePost = (props: CreatePostProps) => {
             >
               <Input></Input>
             </Form.Item>
+            <Button
+              type="primary"
+              htmlType="submit"
+            >
+              Next
+            </Button>
           </Form>
 
-          <Button
-            type="primary"
-            onClick={goToSecondStep}
-          >
-            Next
-          </Button>
+
         </div>
       </Modal>
       <Modal

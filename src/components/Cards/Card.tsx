@@ -2,6 +2,8 @@ import { useNavigate } from "react-router-dom";
 import ShowPhoto from "../ShowPhoto/ShowPhoto";
 import React from "react";
 import "./Cards.css";
+import { useAppDispatch } from "../../store";
+import { getListing } from "../../store/listings/actionCreators";
 
 export interface CardProps {
   posts:{
@@ -18,6 +20,7 @@ export interface CardProps {
 const Card = ({posts,images}: CardProps) => {
   const {city, title, postDate, text, price, id } = posts;
   const navigate = useNavigate();
+  const dispatch = useAppDispatch();
   function clickHandle({event,id}: {event:React.MouseEvent,id:number}) {
     if (
       event.target instanceof HTMLElement &&
