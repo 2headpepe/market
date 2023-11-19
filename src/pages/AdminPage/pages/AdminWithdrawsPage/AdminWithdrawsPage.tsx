@@ -25,7 +25,7 @@ const AdminWithdrawsPage = () => {
     return (
         <div>
 
-            {withdraws?.map((e: IWithdraw) => <Card title={<div>{users?.find((user: IUser) => user.id === e.userId)?.email} wants to withdraw {e.sum}$</div>} style={{ margin: "20px" }} key={e.id}>
+            {withdraws?.withdrawResponseList.map((e: IWithdraw) => <Card title={<div>{users?.userResponseList.find((user: IUser) => user.id === e.userId)?.email} wants to withdraw {e.sum}$</div>} style={{ margin: "20px" }} key={e.id}>
                 <Button type="primary" onClick={() => handleDeleteWithdraw({ approved: true, withdrawId: e.id })}>Approve</Button>
                 <Button style={{ marginLeft: "20px" }} onClick={() => handleDeleteWithdraw({ approved: false, withdrawId: e.id })}>Disapprove</Button>
             </Card>)}

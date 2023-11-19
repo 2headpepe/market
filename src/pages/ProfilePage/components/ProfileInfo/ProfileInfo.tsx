@@ -1,11 +1,10 @@
 import { Button } from "antd";
 import Star from "../../../../components/Star/Star";
 import styles from "./ProfileInfo.module.css";
-import CreatePost from "../../../../components/Modals/CreatePost/CreatePost";
 import React, { useEffect } from "react";
 import { IRootState, useAppDispatch } from "../../../../store";
-import { getProfile } from "../../../../store/auth/actionCreators";
 import { useSelector } from "react-redux";
+import { getProfile } from "../../../../store/user/actionCreators";
 
 const TwoLineInfo = ({
   main,
@@ -24,38 +23,39 @@ const TwoLineInfo = ({
 
 type ProfileInfoProps = React.MouseEventHandler;
 
-const ProfileInfo = ({ createPost }: { createPost: ProfileInfoProps }) => {
-
+const ProfileInfo = ({
+  createPost,
+  editProfile,
+}: {
+  createPost?: ProfileInfoProps;
+  editProfile?: boolean;
+}) => {
   const dispatch = useAppDispatch();
+
+  const user = useSelector(
+    (state: IRootState) => state.user.profileData.profile
+  )
 
   useEffect(()=>{
     dispatch(getProfile());
-  },[])
-
-  const user = useSelector(
-    (state: IRootState) => state.auth.profileData.profile
+  },[]);
+  const info = user ? (
+    [
+      { main: "Email", secondary: user.email },
+      // { main: "Password", secondary: user.password },
+      {
+        main: "Phone number",
+        secondary: user?.phoneNumber ? user?.phoneNumber : "...",
+      },
+    ].map((e) => <TwoLineInfo key={e.main} {...e} />)
+  ) : (
+    <h1>Loading</h1>
   );
-  
-
-// export interface IUserProfile {
-//   id: number,
-//   firstname: string,
-//   lastname: string,
-//   email: string,
-//   password: string,
-//   registrationDate: string,
-//   balance: number,
-//   rating: number
-// }
-
-
-  const info = user?[
-    { main: "Email", secondary: user.email},
-    { main: "Password", secondary: user.password },
-  ].map((e) => <TwoLineInfo {...e} />):<h1>Loading</h1> 
 
   return (
-    <>
+    <div
+      style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
+    >
       <img
         src="https://damion.club/uploads/posts/2022-09/1663879174_3-damion-club-p-dora-pevitsa-oboi-instagram-3.jpg"
         alt="photo"
@@ -64,10 +64,15 @@ const ProfileInfo = ({ createPost }: { createPost: ProfileInfoProps }) => {
 
       <div className={styles.infoWrapper}>
         <div className={styles.mainInfoWrapper}>
-          <div className="primary">Your name</div>
-          <div className="secondary2">Since {user?.registrationDate.toDateString()}</div>
+          <div className="primary">{user?.lastname} {user?.firstname}</div>
+          <div className="secondary2">
+            Since{" "}
+            {user && user.registrationDate
+              ? new Date(user?.registrationDate).toDateString()
+              : "_"}
+          </div>
         </div>
-        <Star rating={user?user.rating:5}></Star>
+        <Star rating={user ? user.rating : 5}></Star>
 
         <hr />
 
@@ -75,17 +80,17 @@ const ProfileInfo = ({ createPost }: { createPost: ProfileInfoProps }) => {
       </div>
 
       <hr className={styles.hr} />
-
       <div className={styles.buttonWrapper}>
-        <Button
-          type="primary"
-          onClick={createPost}
-        >
-          Add post
-        </Button>
-        <Button>Edit profile</Button>
+        {createPost && (
+          <Button type="primary" onClick={createPost}>
+            Add post
+          </Button>
+        )}
+        {editProfile != undefined && editProfile && (
+          <Button>Edit profile</Button>
+        )}
       </div>
-    </>
+    </div>
   );
 };
 

@@ -29,7 +29,7 @@ const AdminDepositsPage = () => {
         <div>
 
 
-            {deposits?.map((e: IDeposit) => <Card title={<div>{users?.find((user: IUser) => user.id === e.userId)?.email} wants to deposit {e.sum}$</div>} style={{ margin: "20px" }} key={e.id}>
+            {deposits?.depositResponseList.map((e: IDeposit) => <Card title={<div>{users?.userResponseList.find((user: IUser) => user.id === e.userId)?.email} wants to deposit {e.sum}$</div>} style={{ margin: "20px" }} key={e.id}>
                 <Button type="primary" onClick={() => handleDeleteDeposit({ approved: true, depositId: e.id })}>Approve</Button>
                 <Button style={{ marginLeft: "20px" }} onClick={() => handleDeleteDeposit({ approved: false, depositId: e.id })}>Disapprove</Button>
             </Card>)}

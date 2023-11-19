@@ -15,7 +15,7 @@ const AdminUsersPage = () => {
 
     const users = useSelector((state: IRootState) => state.admin.usersData.users);
 
-    const usersToDisplay = users?.filter((e: IUser) => e.role!=='ADMIN');
+    const usersToDisplay = users?.userResponseList;
 
     function handleDeleteUser(id: number) {
         deleteUser({ id }).then(() => {
