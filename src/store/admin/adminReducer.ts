@@ -1,5 +1,6 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IDeposit, IUsers, IWithdraw } from "../../api/admin/types";
+import { IDeposit, IGetDepositsResponse, IGetWithdrawsResponse, IUsers, IWithdraw } from "../../api/admin/types";
+import { IPaginationDepositRequest } from "../../api/deposit/types";
 
 export interface AdminState {
   usersData: {
@@ -8,12 +9,12 @@ export interface AdminState {
     error: string | null;
   };
   withdrawsData: {
-    withdraws: IWithdraw[] | null;
+    withdraws: IGetWithdrawsResponse | null;
     isLoading: boolean;
     error: string | null;
   },
   depositsData: {
-    deposits: IDeposit[] | null;
+    deposits: IGetDepositsResponse| null;
     isLoading: boolean;
     error: string | null;
   },
@@ -93,7 +94,7 @@ export const adminReducer = createSlice({
         isLoading: true,
       },
     }),
-    getWithdrawsSuccess: (state, action: PayloadAction<IWithdraw[]>): AdminState => ({
+    getWithdrawsSuccess: (state, action: PayloadAction<IGetWithdrawsResponse>): AdminState => ({
       ...state,
       withdrawsData: {
         ...state.withdrawsData,
@@ -117,7 +118,7 @@ export const adminReducer = createSlice({
         isLoading: true,
       },
     }),
-    getDepositsSuccess: (state, action: PayloadAction<IWithdraw[]>): AdminState => ({
+    getDepositsSuccess: (state, action: PayloadAction<IGetDepositsResponse>): AdminState => ({
       ...state,
       depositsData: {
         ...state.depositsData,

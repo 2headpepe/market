@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ILoginResponse, IUserProfile } from "../../api/auth/types";
+import { ILoginResponse} from "../../api/auth/types";
 
 export interface AuthState {
   authData: {
@@ -8,11 +8,7 @@ export interface AuthState {
     isLoading: boolean;
     error: string | null;
   };
-  profileData: {
-    profile: IUserProfile | null;
-    isLoading: boolean;
-    error: string | null;
-  };
+
 }
 
 const initialState: AuthState = {
@@ -22,11 +18,7 @@ const initialState: AuthState = {
     isLoading: false,
     error: null,
   },
-  profileData: {
-    profile: null,
-    isLoading: false,
-    error: null,
-  },
+
 }
 
 export const authReducer = createSlice({
@@ -65,44 +57,11 @@ export const authReducer = createSlice({
         isLoading: true,
       },
     }),
-    registerSuccess: (state, action: PayloadAction<string>): AuthState => {
-      
-      return {...state};
-      // authData: {
-      //   ...state.authData,
-      //   accessToken: action.payload,
-      //   isLoading: false,
-      //   error: null,
-      // },
-    },
+    registerSuccess: (state): AuthState => state,
     registerFailure: (state, action: PayloadAction<string>): AuthState => ({
       ...state,
       authData: {
         ...state.authData,
-        isLoading: false,
-        error: action.payload,
-      },
-    }),
-    loadProfileStart: (state): AuthState => ({
-      ...state,
-      profileData: {
-        ...state.profileData,
-        isLoading: true,
-      },
-    }),
-    loadProfileSuccess: (state, action: PayloadAction<IUserProfile>): AuthState => ({
-      ...state,
-      profileData: {
-        ...state.profileData,
-        profile: action.payload,
-        isLoading: false,
-        error: null,
-      },
-    }),
-    loadProfileFailure: (state, action: PayloadAction<string>): AuthState => ({
-      ...state,
-      profileData: {
-        ...state.profileData,
         isLoading: false,
         error: action.payload,
       },
@@ -112,9 +71,6 @@ export const authReducer = createSlice({
 });
 
 export const {
-  loadProfileStart,
-  loadProfileSuccess,
-  loadProfileFailure,
   loginStart,
   loginSuccess,
   loginFailure,

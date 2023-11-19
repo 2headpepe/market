@@ -1,11 +1,14 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IUserProfile } from "../../api/auth/types";
-import { IUsers } from "../../api/admin/types";
-import { ICategories } from "../../api/category/types";
+import { ICategories, ICategory } from "../../api/category/types";
 
 export interface CategoryState {
   categoriesData: {
     categories: ICategories | null;
+    isLoading: boolean;
+    error: string | null;
+  };
+  singleCategory: {
+    category: ICategory | null;
     isLoading: boolean;
     error: string | null;
   };
@@ -17,7 +20,11 @@ const initialState: CategoryState = {
     isLoading: false,
     error: null,
   },
-
+  singleCategory: {
+    category: null,
+    isLoading: false,
+    error: null,
+  },
 }
 
 export const categoryReducer = createSlice({
@@ -48,13 +55,40 @@ export const categoryReducer = createSlice({
         error: action.payload,
       },
     }),
+    getCategoryStart: (state): CategoryState => ({
+      ...state,
+      singleCategory: {
+        ...state.singleCategory,
+        isLoading: true,
+      },
+    }),
+    getCategorySuccess: (state, action: PayloadAction<ICategory>): CategoryState => ({
+      ...state,
+      singleCategory: {
+        ...state.singleCategory,
+        category: action.payload,
+        isLoading: false,
+        error: null,
+      },
+    }),
+    getCategoryFailure: (state, action: PayloadAction<string>): CategoryState => ({
+      ...state,
+      singleCategory: {
+        ...state.singleCategory,
+        isLoading: false,
+        error: action.payload,
+      },
+    }),
   }
 });
 
 export const {
   getCategoriesStart,
   getCategoriesSuccess,
-  getCategoriesFailure
+  getCategoriesFailure,
+  getCategoryStart,
+  getCategorySuccess,
+  getCategoryFailure
 } = categoryReducer.actions;
 
 export default categoryReducer.reducer;

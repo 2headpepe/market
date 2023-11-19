@@ -1,10 +1,8 @@
 import { Dispatch } from "@reduxjs/toolkit";
-import { ILoginRequest, ILoginResponse, IRegisterRequest, IUserProfile } from "../../api/auth/types";
-import { loadProfileFailure, loadProfileStart, loadProfileSuccess, loginFailure, loginStart, loginSuccess, logoutSuccess, registerFailure, registerStart, registerSuccess } from "./authReducer";
+import { ILoginRequest,IRegisterRequest} from "../../api/auth/types";
+import {loginFailure, loginStart, loginSuccess, logoutSuccess, registerFailure, registerStart, registerSuccess } from "./authReducer";
 
 import api from "../../api";
-import { useNavigate } from "react-router-dom";
-import { AxiosPromise } from "axios";
 import { store } from "..";
 
 export const loginUser =
@@ -16,13 +14,15 @@ export const loginUser =
         const res = await api.auth.login(data)
         // const res = {data:{accessToken:"234"}}
         // console.log(res.data['access_token'])
+
+        localStorage.setItem('token',res.data['access_token']);
+
         dispatch(loginSuccess({access_token:res.data['access_token'],role:res.data.role}))
 
         // dispatch(getProfile())
 
       } catch (e: any) {
         console.error(e)
-
         dispatch(loginFailure(e.message))
       }
     }
@@ -36,7 +36,7 @@ export const registerUser =
         const res = await api.auth.register(data)
         // const res = {data:{accessToken:"234"}}
         // console.log(res.data['access_token'])
-        dispatch(registerSuccess(res.data['access_token']));
+        dispatch(registerSuccess());
 
         // const loginData = {email:data.email,password:data.password};
 
@@ -57,6 +57,8 @@ export const logoutUser =
       try {
         // await api.auth.logout()
 
+        localStorage.removeItem('token');
+
         dispatch(logoutSuccess())
 
         // history.push('/')
@@ -65,21 +67,6 @@ export const logoutUser =
       }
     }
 
-export const getProfile = () =>
-  async (dispatch: Dispatch<any>): Promise<void> => {
-    try {
-      dispatch(loadProfileStart())
-
-      const res = await api.auth.getProfile()
-      
-
-      dispatch(loadProfileSuccess(res.data as IUserProfile))
-    } catch (e: any) {
-      console.error(e)
-
-      dispatch(loadProfileFailure(e.message))
-    }
-  }
 
 // let refreshTokenRequest: AxiosPromise<ILoginResponse> | null = null
 
@@ -87,9 +74,12 @@ export const getAccessToken =
   () =>
     async (dispatch: Dispatch<any>): Promise<string | null> => {
       try {
-        const accessToken = store.getState().auth.authData.accessToken
+        const accessToken = localStorage.getItem('token');
+        if(accessToken){
+          return accessToken;
+        }
 
-        return accessToken
+        return store.getState().auth.authData.accessToken
       } catch (e) {
         console.error(e)
 

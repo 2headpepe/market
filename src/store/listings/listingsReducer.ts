@@ -1,9 +1,9 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {   IListing, IListings } from "../../api/listings/types";
+import {   IListing, IListings, IPaginationListings } from "../../api/listings/types";
 
 export interface ListingsState {
   myListings: {
-    listings: IListings | null;
+    listings: IPaginationListings | null;
     isLoading: boolean;
     error: string | null;
   };
@@ -17,14 +17,14 @@ export interface ListingsState {
 
   userListings: {
     [key: string]: {
-      listings: IListings | null;
+      listings: IPaginationListings | null;
       isLoading: boolean;
       error: string | null;
     };
   }
 
   allListings: {
-    listings: IListings | null;
+    listings: IPaginationListings | null;
     isLoading: boolean;
     error: string | null;
   }
@@ -63,7 +63,7 @@ const initialState: ListingsState = {
 
 export interface ListingsAction {
   id?: number;
-  listings?: IListings;
+  listings?: IPaginationListings;
   error?: string;
 }
 
@@ -230,6 +230,31 @@ export const listingsReducer = createSlice({
           error: action.payload.error!,
       },
     }),
+    // searchListingsMoreStart: (state): ListingsState => ({
+    //   ...state,
+    //   allListings:{
+    //     ...state.allListings,
+    //       isLoading:true,
+    //   }
+    // }),
+    // searchListingsMoreSuccess: (state, action: PayloadAction<ListingsAction>): ListingsState => {
+    //   const listings = [...(state.allListings.listings??[] ),...action.payload.listings!];
+    //   return {...state,
+    //   allListings: {
+    //     ...state.allListings,
+    //       listings,
+    //       isLoading: false,
+    //       error: null,
+    //   },}
+    // },
+    // searchListingsMoreFailure: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    //   ...state,
+    //   allListings: {
+    //     ...state.allListings,
+    //       isLoading: false,
+    //       error: action.payload.error!,
+    //   },
+    // }),
   },
 });
 
@@ -251,7 +276,10 @@ export const {
   getUserListingsFailure,
   searchListingsStart,
   searchListingsSuccess,
-  searchListingsFailure
+  searchListingsFailure,
+  // searchListingsMoreStart,
+  // searchListingsMoreSuccess,
+  // searchListingsMoreFailure
 } = listingsReducer.actions;
 
 export default listingsReducer.reducer;

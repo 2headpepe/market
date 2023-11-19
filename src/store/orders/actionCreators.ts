@@ -1,34 +1,93 @@
 import { Dispatch } from "@reduxjs/toolkit"
-import { OrdersAction, getBuysFailure, getBuysStart, getBuysSuccess, getSellsFailure, getSellsStart, getSellsSuccess } from "./ordersReducer"
-import { IListings } from "../../api/listings/types";
+import { OrdersAction, getActiveBuysFailure, getActiveBuysStart, getActiveBuysSuccess, getActiveSellsFailure, getActiveSellsStart, getActiveSellsSuccess, getApprovedBuysFailure, getApprovedBuysStart, getApprovedBuysSuccess, getApprovedSellsFailure, getApprovedSellsStart, getApprovedSellsSuccess, getDisapprovedBuysFailure, getDisapprovedBuysStart, getDisapprovedBuysSuccess, getDisapprovedSellsFailure, getDisapprovedSellsStart, getDisapprovedSellsSuccess } from "./ordersReducer"
 import api from "../../api";
 
-export const getMySells = () =>
+export const getDisapprovedSells = () =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
-    dispatch(getSellsStart({}));
+    dispatch(getDisapprovedSellsStart({}));
 
-    const result = (await api.orders.getMySells()).data;
+    const result = (await api.orders.getDisapprovedSells()).data;
 
-    dispatch(getSellsSuccess({listings:result}))
+    dispatch(getDisapprovedSellsSuccess({listings:result}))
   } catch (e: any) {
     console.error(e)
 
-    dispatch(getSellsFailure({error:e.message}))
+    dispatch(getDisapprovedSellsFailure({error:e.message}))
   }
 }
 
-export const getMyBuys = () =>
+export const getDisapprovedBuys = () =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
-    dispatch(getBuysStart({id:-1} as OrdersAction));
+    dispatch(getDisapprovedBuysStart({id:-1} as OrdersAction));
 
-    const result = (await api.orders.getMyBuys()).data;
+    const result = (await api.orders.getDisapprovedBuys()).data;
 
-    dispatch(getBuysSuccess({listings:result}))
+    dispatch(getDisapprovedBuysSuccess({listings:result}))
   } catch (e: any) {
     console.error(e)
 
-    dispatch(getBuysFailure({error:e.message}))
+    dispatch(getDisapprovedBuysFailure({error:e.message}))
+  }
+}
+
+export const getApprovedSells = () =>
+async (dispatch: Dispatch<any>): Promise<void> => {
+  try {
+    dispatch(getApprovedSellsStart({}));
+
+    const result = (await api.orders.getApprovedSells()).data;
+
+    dispatch(getApprovedSellsSuccess({listings:result}))
+  } catch (e: any) {
+    console.error(e)
+
+    dispatch(getApprovedSellsFailure({error:e.message}))
+  }
+}
+
+export const getApprovedBuys = () =>
+async (dispatch: Dispatch<any>): Promise<void> => {
+  try {
+    dispatch(getApprovedBuysStart({id:-1} as OrdersAction));
+
+    const result = (await api.orders.getApprovedBuys()).data;
+
+    dispatch(getApprovedBuysSuccess({listings:result}))
+  } catch (e: any) {
+    console.error(e)
+
+    dispatch(getApprovedBuysFailure({error:e.message}))
+  }
+}
+
+export const getActiveSells = () =>
+async (dispatch: Dispatch<any>): Promise<void> => {
+  try {
+    dispatch(getActiveSellsStart({}));
+
+    const result = (await api.orders.getApprovedSells()).data;
+
+    dispatch(getActiveSellsSuccess({listings:result}))
+  } catch (e: any) {
+    console.error(e)
+
+    dispatch(getActiveSellsFailure({error:e.message}))
+  }
+}
+
+export const getActiveBuys = () =>
+async (dispatch: Dispatch<any>): Promise<void> => {
+  try {
+    dispatch(getActiveBuysStart({id:-1} as OrdersAction));
+
+    const result = (await api.orders.getApprovedBuys()).data;
+
+    dispatch(getActiveBuysSuccess({listings:result}))
+  } catch (e: any) {
+    console.error(e)
+
+    dispatch(getActiveBuysFailure({error:e.message}))
   }
 }

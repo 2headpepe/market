@@ -1,11 +1,7 @@
 import { Dispatch } from "@reduxjs/toolkit";
-import { ILoginRequest, ILoginResponse, IRegisterRequest, IUserProfile } from "../../api/auth/types";
 import { createCategoryFailure, deleteCategoryFailure, deleteDepositFailure, deleteUserFailure, deleteWithdrawFailure, getDepositsFailure, getDepositsStart, getDepositsSuccess, getUsersFailure, getUsersStart, getUsersSuccess, getWithdrawsFailure, getWithdrawsStart, getWithdrawsSuccess } from "./adminReducer";
 
 import api from "../../api";
-import { useNavigate } from "react-router-dom";
-import { AxiosPromise } from "axios";
-import { store } from "..";
 import { ICreateCategoryRequest, IDeleteCategoryRequest, IDeleteDepositRequest, IDeleteUserRequest, IDeleteWithdrawRequest } from "../../api/admin/types";
 import { getCategories } from "../category/actionCreators";
 

@@ -1,12 +1,12 @@
-import { configureStore, getDefaultMiddleware } from "@reduxjs/toolkit";
+import { configureStore,} from "@reduxjs/toolkit";
 import { useDispatch } from "react-redux";
-import logger from "redux-logger";
 import authReducer from "./auth/authReducer";
 import listingsReducer from "./listings/listingsReducer";
 import imagesReducer from "./images/imagesReducer";
 import ordersReducer from "./orders/ordersReducer";
 import adminReducer from "./admin/adminReducer";
 import categoryReducer from "./category/categoryReducer";
+import  userReducer from "./user/authReducer";
 
 export const store = configureStore({
   reducer: {
@@ -15,13 +15,11 @@ export const store = configureStore({
     images:imagesReducer,
     orders:ordersReducer,
     admin:adminReducer,
-    category:categoryReducer
-    // user: user,
+    category:categoryReducer,
+    user: userReducer,
   },
   middleware: (getDefaultMiddleware) =>
-    getDefaultMiddleware().concat(
-      ...(process.env.NODE_ENV !== "production" ? [logger] : [])
-    ),
+    getDefaultMiddleware()
 });
 
 export type IRootState = ReturnType<typeof store.getState>;

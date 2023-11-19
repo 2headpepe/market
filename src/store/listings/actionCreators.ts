@@ -1,6 +1,6 @@
 import { Dispatch } from "@reduxjs/toolkit"
-import { ListingsAction, buyListingFailure, createListingFailure, deleteListingFailure, getListingFailure, getListingStart, getListingSuccess, getMyFailure, getMyStart, getMySuccess, getUserListingsFailure, getUserListingsStart, getUserListingsSuccess, searchListingsFailure, searchListingsStart, searchListingsSuccess } from "./listingsReducer"
-import { IBuyListingRequest, ICreateListingRequest, IDeleteListingRequest, IGetListingRequest, IGetUserListingsRequest, IListings, ISearchListingsRequest } from "../../api/listings/types";
+import {  buyListingFailure, createListingFailure, deleteListingFailure, getListingFailure, getListingStart, getListingSuccess, getMyFailure, getMyStart, getMySuccess, getUserListingsFailure, getUserListingsStart, getUserListingsSuccess, searchListingsFailure, searchListingsStart, searchListingsSuccess } from "./listingsReducer"
+import { IBuyListingRequest, ICreateListingRequest, IDeleteListingRequest, IGetListingRequest, IGetMyListingsRequest, IGetUserListingsRequest, IListings, ISearchListingsRequest } from "../../api/listings/types";
 import api from "../../api";
 
 export const createListing = (data:ICreateListingRequest) =>
@@ -34,7 +34,7 @@ async (dispatch: Dispatch<any>): Promise<void> => {
   try {
 
     await api.listings.buyListing(data);
-    
+
   } catch (e: any) {
     console.error(e)
 
@@ -68,14 +68,13 @@ async (dispatch: Dispatch<any>): Promise<void> => {
     dispatch(getUserListingsFailure({error:e.message}))
   }
 }
-
 export const searchListings = (data:ISearchListingsRequest) =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
     dispatch(searchListingsStart());
 
     const result = (await api.listings.searchListings(data)).data ;
-
+    console.log(result)
     dispatch(searchListingsSuccess({listings:result}))
   } catch (e: any) {
     console.error(e)
@@ -85,12 +84,12 @@ async (dispatch: Dispatch<any>): Promise<void> => {
 }
 
 
-export const getMyListings = () =>
+export const getMyListings = (params:IGetMyListingsRequest) =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
     dispatch(getMyStart());
 
-    const result = (await api.listings.getMyListings()).data ;
+    const result = (await api.listings.getMyListings(params)).data ;
 
     dispatch(getMySuccess({listings:result}))
   } catch (e: any) {
