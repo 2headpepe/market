@@ -1,11 +1,23 @@
 import { Button } from "antd";
-import React from "react";
+import React, { useEffect } from "react";
 import ShowPhoto from "../../components/ShowPhoto/ShowPhoto";
-import Card from "../../components/Cards";
 import styles from "./PostInfoPage.module.css";
-import { Link, useParams } from "react-router-dom";
+import { useParams } from "react-router-dom";
 import CategoryBadge from "../../components/CategoryBadge/CategoryBadge";
 import Header from "../../components/Header/Header";
+import { IRootState, useAppDispatch } from "../../store";
+import { useSelector } from "react-redux";
+import { getListingImages } from "../../store/images/actionCreators";
+import { getCategory } from "../../store/category/actionCreators";
+import {getProfile, getUser } from "../../store/user/actionCreators";
+import Modal from "../../components/Modals/Modal/Modal";
+import {
+  DownCircleFilled,
+  DownOutlined,
+  UpCircleFilled,
+} from "@ant-design/icons";
+import ProfileInfo from "./components/ProfileInfo/ProfileInfo";
+import { buyListing, getListing } from "../../store/listings/actionCreators";
 interface IPostRequest {
   images: string[];
   id: number;
@@ -27,34 +39,63 @@ const category = [
 ];
 
 const PostInfoPage = () => {
-  const id = useParams().id;
-  //getListing()
-  const post = {
-    "id": 0,
-    "title": "string",
-    "text": "string",
-    "categoryId": "string",
-    "price": 0,
-    "city": "string",
-    "postDate": "2023-11-05T17:02:41.681Z",
-    "sold": true,
-    "userId": 0
+  const id = useParams().postId;
+  if (!id) {
+    return <div>Error</div>;
+  }
+  const dispatch = useAppDispatch();
+  useEffect(() => {
+    dispatch(getListing({ id: +id }));
+  }, [id]);
+
+  const post = useSelector(
+    (state: IRootState) => state.listings.singleListing
+  );
+  const images = useSelector((state: IRootState) => state.images[id]);
+
+  const category = useSelector(
+    (state: IRootState) => state.category.singleCategory
+  );
+
+  const sellerInfo = useSelector((state: IRootState) => state.user.userData);
+
+  if(post.error){
+    return <h1>Error</h1>
   }
 
-  // const { images, city, title, postDate, text, price } = props;
-  return (
+  useEffect(() => {
+    if (!post.error && !post.isLoading && post.listing) {
+      console.log("Log from useEffect category,user,images: ", post?.listing, sellerInfo, id)
+      dispatch(getCategory({ categoryId: post.listing.categoryId }));
+      dispatch(getUser({ id: post.listing.userId }));
+      dispatch(getListingImages({ listingsId: [+id] }));
+    }
+  }, [post?.listing]);
+  const [sellerInfoModal, setSellerInfoModal] = React.useState(false);
+
+  function handleViewInfo() {
+    setSellerInfoModal((state) => !state);
+  }
+
+  function handleBuy(){
+    dispatch(buyListing({id:post.listing!.id}));
+  }
+  // useEffect(() => {
+  //   if (!post.error && !post.isLoading && post.listing) {
+  //     dispatch(getUser({ id: post.listing.userId }));
+  //   }
+  // }, [sellerInfoModal]);
+
+  return post.listing ? (
     <div className={styles.postInfoPageWrapper}>
       <Header></Header>
 
       <div className={styles.mainWrapper}>
         <div>
           <ShowPhoto
-            height={"500px"}
-            width={"500px"}
-            images={[
-              "https://content.api.news/v3/images/bin/19baaccb3d706775bb9c3bbe2f946bb3",
-              "https://damion.club/uploads/posts/2022-09/1663879174_3-damion-club-p-dora-pevitsa-oboi-instagram-3.jpg",
-            ]}
+            height={"40vw"}
+            width={"40vw"}
+            images={images?.error ?? (!images || images.isLoading)?"Loading":images?.images}
           ></ShowPhoto>
         </div>
 
@@ -62,23 +103,32 @@ const PostInfoPage = () => {
           {/* <Link to={"/"}>
           <div className="secondary">Get back</div>
         </Link> */}
-
-          <CategoryBadge
-            //   width={"200px"}
-            height={"40px"}
-            id={0}
-          >
-            Clothes
-          </CategoryBadge>
-          {/* {category.map((e) => (
-            <CategoryBadge
-              id={e}
-              height={"40px"}
-            >
-              (.)(.)  
+          <div className={styles.headerWrapper}>
+            <CategoryBadge width={"200px"} height={"40px"} id={0}>
+              {category?.error ??
+                (category?.category?.name
+                  ? category?.category?.name
+                  : "loading")}
             </CategoryBadge>
-          ))} */}
-          {/* <hr /> */}
+            {/* <Link to="/profile"> */}
+            <div className={styles.sellerInfo} onClick={handleViewInfo}>
+              <CategoryBadge width={"200px"} height={"40px"} id={3}>
+                <div style={{ marginRight: "10px" }}>
+                  {sellerInfo.error ??
+                    (sellerInfo?.profile
+                      ? sellerInfo?.profile.email
+                      : "Loading")}
+                </div>
+              </CategoryBadge>
+              {/* <DownOutlined color=""/> */}
+              {sellerInfoModal ? (
+                <UpCircleFilled style={{ fontSize: "30px" }} />
+              ) : (
+                <DownCircleFilled style={{ fontSize: "30px" }} />
+              )}
+            </div>
+            {/* </Link> */}
+          </div>
           <div
             className="Card--info-wrapper "
             style={{
@@ -88,39 +138,32 @@ const PostInfoPage = () => {
               gap: "8px",
             }}
           >
-            <div className="Card--location--wrapper">
-              <img
-                src="./images/location.svg"
-                alt=""
-                className="Card--location--icon"
-              />
-              <p className="Card--location--text">{post.city}</p>
-              <p className="Card--dates">{post.postDate}</p>
-            </div>
+            <p className="Card--dates">{post.isLoading?"Loading":post.listing!.postDate}</p>
 
-            <h3 className="Card--name">{post.title}</h3>
-            <p className="Card--text">{post.text}</p>
-            <h4 className="Card--price">{post.price + "$"}</h4>
+            <h3 className="Card--name">{post.isLoading?"Loading":post.listing!.title}</h3>
+            <p className="Card--text">{post.isLoading?"Loading":post.listing!.text}</p>
+            <h4 className="Card--price">{post.isLoading?"Loading":post.listing!.price + "$"}</h4>
           </div>
 
+          <Button type="primary" onClick={handleBuy}>
+            Buy
+          </Button>
           {/* <hr /> */}
-          <Link to="/profile">
-            <div className={styles.sellerInfo}>
-              <div>
-                <div className="primary">Your name</div>
-                <div className="secondary">Status</div>
-              </div>
-              <img
-                className={styles.photo}
-                src="https://38s.musify.club/img/68/22744618/58256306.jpg"
-                alt="icon"
-                height={48}
-              />
-            </div>
-          </Link>
         </div>
       </div>
+      <Modal
+        modal={sellerInfoModal}
+        setModal={setSellerInfoModal}
+        position={{ position: "absolute", right: "10vw", top: "40vh" }}
+      >
+        <div style={{ width: "15vw", minWidth: "300px" }}>
+          {/* <p>Seller Info</p> */}
+          <ProfileInfo editProfile={false} id={post.isLoading?null:post.listing!.userId} />
+        </div>
+      </Modal>
     </div>
+  ) : (
+    <div>Loading</div>
   );
 };
 

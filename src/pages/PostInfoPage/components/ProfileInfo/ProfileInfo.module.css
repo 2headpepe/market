@@ -1,0 +1,29 @@
+.profilePhoto {
+  border-radius: 100%;
+  width: 100px;
+  height: 100px;
+  object-fit: cover;
+
+  margin: auto;
+  margin-top: 20px;
+}
+.infoWrapper {
+  width: 100%;
+}
+
+.mainInfoWrapper {
+  margin-top: 10px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.blockWrapper {
+  margin-top: 16px;
+}
+
+.buttonWrapper {
+  display: flex;
+  align-items: center;
+  justify-content: space-around;
+}

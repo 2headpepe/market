@@ -24,7 +24,7 @@
   display: flex;
   flex-direction: column;
   /* align-items: center; */
-  gap: 12px;
+  gap: 40px;
 }
 
 .sellerInfo {
@@ -33,7 +33,7 @@
   align-items: center;
   justify-content: center;
 
-  background-color: rgba(0, 0, 0, 0.8);
+  /* background-color: ; */
   border-radius: 30px;
 
   /* padding: 4px; */
@@ -41,8 +41,15 @@
   /* width: 100px; */
   padding: 0px 10px;
   height: 30px;
+  /* z-index: 2; */
 }
 
 .photo {
   border-radius: 30px;
+}
+
+.headerWrapper{
+  display:flex;
+  align-items: center;
+
 }
