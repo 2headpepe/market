@@ -1,10 +1,9 @@
 import { Button } from "antd";
 import Star from "../../../../components/Star/Star";
 import styles from "./ProfileInfo.module.css";
-import React, { useEffect } from "react";
-import { IRootState, useAppDispatch } from "../../../../store";
+import React from "react";
+import { IRootState} from "../../../../store";
 import { useSelector } from "react-redux";
-import { getUser } from "../../../../store/user/actionCreators";
 
 const TwoLineInfo = ({
   main,
@@ -32,12 +31,12 @@ const ProfileInfo = ({
   editProfile?: boolean;
   id: number|null;
 }) => {
-  const dispatch = useAppDispatch();
+  // const dispatch = useAppDispatch();
+  const user = useSelector((state: IRootState) => state.user.userData);
   if(!id){
     return <></>
   }
 
-  const user = useSelector((state: IRootState) => state.user.userData);
 
   if(user.error){
     return <div>Error</div>

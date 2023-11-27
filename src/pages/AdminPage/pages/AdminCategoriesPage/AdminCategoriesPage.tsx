@@ -14,7 +14,7 @@ const AdminCategoriesPage = () => {
     const dispatch = useAppDispatch();
     useEffect(() => {
         dispatch(getCategories());
-    }, []);
+    },[]);
 
     const categories = useSelector((state: IRootState) => state.category.categoriesData.categories);
 
@@ -52,7 +52,7 @@ const AdminCategoriesPage = () => {
     return (
         <div>
             <div style={{ margin: "20px" }}><CategoryBadge id={categories ? categories[categories?.length - 1].id + 1 : 1} width={"300px"} height="40px" children={<CreateCategoryContent text={"Add category"} />} /></div>
-            {categories?.map((e: ICategory, index) => <div style={{ margin: "20px" }}><CategoryBadge id={index} children={<CategoryContent text={e.name} categoryId={e.id} />} width={"300px"} height="40px" /></div>)}
+            {categories?.map((e: ICategory, index) => <div key={e.id} style={{ margin: "20px" }}><CategoryBadge id={index} children={<CategoryContent text={e.name} categoryId={e.id} />} width={"300px"} height="40px" /></div>)}
 
         </div>
     );

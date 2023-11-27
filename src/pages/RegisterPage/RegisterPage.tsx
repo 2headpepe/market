@@ -1,23 +1,22 @@
-import React from "react";
-
 import { Button, Form, Input } from "antd";
 import { Link, useNavigate } from "react-router-dom";
 
 import styles from "./RegisterPage.module.css";
-import { ILoginRequest, IRegisterRequest } from "../../api/auth/types";
-import { IRootState, useAppDispatch } from "../../store";
-import { loginUser, registerUser } from "../../store/auth/actionCreators";
-import { useSelector } from "react-redux";
+import { IRegisterRequest } from "../../api/auth/types";
+import {  useAppDispatch } from "../../store";
+import { registerUser } from "../../store/auth/actionCreators";
 
 function RegisterPage() {
   const dispatch = useAppDispatch();
   const navigate = useNavigate();
-  const token = useSelector((state:IRootState)=>state.auth.authData.accessToken);
+  // createLink();
 
   function registerHandle(values: IRegisterRequest) {
 
-    dispatch(registerUser(values)).then(() => navigate("/"));
+    dispatch(registerUser(values)).then(() => navigate("/login"));
+    // uploadPhoto();
   }
+  console.log('1')
   return (
     <div className={styles.RegisterPage}>
       <div className={styles.formWrapper}>

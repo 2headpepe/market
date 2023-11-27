@@ -1,16 +1,7 @@
-import React, { useEffect } from "react";
+import React from "react";
 import Header from "../../components/Header/Header";
-import { IRootState, useAppDispatch } from "../../store";
-import { getDeposits, getUsers, getWithdraws } from "../../store/admin/actionCreators";
-import { useSelector } from "react-redux";
-import { IDeposit, IUser, IWithdraw } from "../../api/admin/types";
-import { Button, Card, Input } from "antd";
-import { createCategory, deleteCategory, deleteDeposit, deleteUser, deleteWithdraw } from "../../api/admin";
-import { getCategories } from "../../store/category/actionCreators";
-import { ICategory } from "../../api/category/types";
-import CategoryBadge from "../../components/CategoryBadge/CategoryBadge";
-import { CloseOutlined, PlusOutlined } from "@ant-design/icons";
 import { Outlet, useNavigate } from "react-router-dom";
+import { Button } from "antd";
 
 
 const AdminPage = () => {

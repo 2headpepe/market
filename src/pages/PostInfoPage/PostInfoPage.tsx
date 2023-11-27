@@ -1,92 +1,91 @@
 import { Button } from "antd";
+import {Modal as AntdModal} from "antd";
 import React, { useEffect } from "react";
 import ShowPhoto from "../../components/ShowPhoto/ShowPhoto";
 import styles from "./PostInfoPage.module.css";
-import { useParams } from "react-router-dom";
+import { useNavigate, useParams } from "react-router-dom";
 import CategoryBadge from "../../components/CategoryBadge/CategoryBadge";
 import Header from "../../components/Header/Header";
 import { IRootState, useAppDispatch } from "../../store";
 import { useSelector } from "react-redux";
 import { getListingImages } from "../../store/images/actionCreators";
 import { getCategory } from "../../store/category/actionCreators";
-import {getProfile, getUser } from "../../store/user/actionCreators";
-import Modal from "../../components/Modals/Modal/Modal";
-import {
-  DownCircleFilled,
-  DownOutlined,
-  UpCircleFilled,
-} from "@ant-design/icons";
+import { getUser } from "../../store/user/actionCreators";
+// import Modal from "../../components/Modals/Modal/Modal";
+import { DownCircleFilled, UpCircleFilled } from "@ant-design/icons";
 import ProfileInfo from "./components/ProfileInfo/ProfileInfo";
 import { buyListing, getListing } from "../../store/listings/actionCreators";
-interface IPostRequest {
-  images: string[];
-  id: number;
-  userId: number;
-  title: string;
-  text: string;
-  categoryId: string;
-  price: number;
-  city: string;
-  postDate: string;
-  sold: boolean;
-}
-const category = [
-  "Home",
-  "Services",
-  "Electronics",
-  "Clothes",
-  "Health and beauty",
-];
+import { getActiveBuys } from "../../store/orders/actionCreators";
+import Modal from "../../components/Modals/Modal/Modal";
+// interface IPostRequest {
+//   images: string[];
+//   id: number;
+//   userId: number;
+//   title: string;
+//   text: string;
+//   categoryId: string;
+//   price: number;
+//   city: string;
+//   postDate: string;
+//   sold: boolean;
+// }
 
 const PostInfoPage = () => {
   const id = useParams().postId;
-  if (!id) {
-    return <div>Error</div>;
-  }
+  const navigate = useNavigate();
   const dispatch = useAppDispatch();
+  const [sellerInfoModal, setSellerInfoModal] = React.useState(false);
+  const [successBuyOpen,setSuccessBuyOpen] = React.useState(false);
   useEffect(() => {
-    dispatch(getListing({ id: +id }));
+    if (id) dispatch(getListing({ id: +id }));
   }, [id]);
 
-  const post = useSelector(
-    (state: IRootState) => state.listings.singleListing
+  const post = useSelector((state: IRootState) => state.listings.singleListing);
+  const images = useSelector((state: IRootState) =>
+    (id && state.images[id]?.images) ? state.images[id].images : null
   );
-  const images = useSelector((state: IRootState) => state.images[id]);
 
   const category = useSelector(
     (state: IRootState) => state.category.singleCategory
   );
 
   const sellerInfo = useSelector((state: IRootState) => state.user.userData);
-
-  if(post.error){
-    return <h1>Error</h1>
-  }
-
   useEffect(() => {
-    if (!post.error && !post.isLoading && post.listing) {
-      console.log("Log from useEffect category,user,images: ", post?.listing, sellerInfo, id)
+    if (!post.error && !post.isLoading && post.listing && id) {
       dispatch(getCategory({ categoryId: post.listing.categoryId }));
       dispatch(getUser({ id: post.listing.userId }));
-      dispatch(getListingImages({ listingsId: [+id] }));
+      dispatch(getListingImages({ listingId: [+id] }));
     }
-  }, [post?.listing]);
-  const [sellerInfoModal, setSellerInfoModal] = React.useState(false);
+  }, [post]);
+
+
+
+  if (post.error) {
+    return <h1>Error</h1>;
+  }
 
   function handleViewInfo() {
     setSellerInfoModal((state) => !state);
   }
 
-  function handleBuy(){
-    dispatch(buyListing({id:post.listing!.id}));
+  function handleBuy() {
+    dispatch(buyListing({ id: post.listing!.id })).then(()=>{
+      dispatch(getActiveBuys());
+    })
+    setSuccessBuyOpen(true);
   }
+
+
+
   // useEffect(() => {
   //   if (!post.error && !post.isLoading && post.listing) {
   //     dispatch(getUser({ id: post.listing.userId }));
   //   }
   // }, [sellerInfoModal]);
-
-  return post.listing ? (
+  if (!id) {
+    return <div>Error</div>;
+  }
+  return (post.listing && images) ? (
     <div className={styles.postInfoPageWrapper}>
       <Header></Header>
 
@@ -95,7 +94,7 @@ const PostInfoPage = () => {
           <ShowPhoto
             height={"40vw"}
             width={"40vw"}
-            images={images?.error ?? (!images || images.isLoading)?"Loading":images?.images}
+            images={images.map((e)=>e.path)}
           ></ShowPhoto>
         </div>
 
@@ -138,14 +137,24 @@ const PostInfoPage = () => {
               gap: "8px",
             }}
           >
-            <p className="Card--dates">{post.isLoading?"Loading":post.listing!.postDate}</p>
+            <p className="Card--dates">
+              {post.isLoading
+                ? "Loading"
+                : new Date(post.listing!.postDate).toDateString()}
+            </p>
 
-            <h3 className="Card--name">{post.isLoading?"Loading":post.listing!.title}</h3>
-            <p className="Card--text">{post.isLoading?"Loading":post.listing!.text}</p>
-            <h4 className="Card--price">{post.isLoading?"Loading":post.listing!.price + "$"}</h4>
+            <h3 className="Card--name">
+              {post.isLoading ? "Loading" : post.listing!.title}
+            </h3>
+            <p className="Card--text">
+              {post.isLoading ? "Loading" : post.listing!.text}
+            </p>
+            <h4 className="Card--price">
+              {post.isLoading ? "Loading" : post.listing!.price + "$"}
+            </h4>
           </div>
 
-          <Button type="primary" onClick={handleBuy}>
+          <Button type="primary" onClick={()=>handleBuy()}>
             Buy
           </Button>
           {/* <hr /> */}
@@ -158,9 +167,16 @@ const PostInfoPage = () => {
       >
         <div style={{ width: "15vw", minWidth: "300px" }}>
           {/* <p>Seller Info</p> */}
-          <ProfileInfo editProfile={false} id={post.isLoading?null:post.listing!.userId} />
+          <ProfileInfo
+            editProfile={false}
+            id={post.isLoading ? null : post.listing!.userId}
+          />
         </div>
       </Modal>
+
+      <AntdModal title={"Success buy: "+ post.listing.title} open={successBuyOpen} onOk={()=>{setSuccessBuyOpen(false); navigate("/")}} footer={(_,{OkBtn})=><OkBtn/>}>
+        <p>Now you can meet with the seller and receive the goods</p>
+       </AntdModal>
     </div>
   ) : (
     <div>Loading</div>
