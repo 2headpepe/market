@@ -1,9 +1,8 @@
-import { Button, Input, InputNumber, Select } from "antd";
+import { Button, InputNumber, Select } from "antd";
 import styles from "./MoneyModal.module.css";
 import Modal from "../Modal/Modal";
 import ModalProps from "../ModalTypes";
 import React from "react";
-import { useAppDispatch } from "../../../store";
 import { deposit } from "../../../api/deposit";
 import { withdraws } from "../../../api/withdraw";
 
@@ -30,6 +29,7 @@ const MoneyModal = (props: ModalProps) => {
     }else{
       deposit({sum:+moneyAmount});
     }
+    props.setModal(false);
   }
 
   return (

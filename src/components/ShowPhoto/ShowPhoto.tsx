@@ -3,7 +3,7 @@ import React from "react";
 import styles from "./ShowPhoto.module.css";
 
 interface ShowPhotoProps {
-  images: string[] | null | string;
+  images: string[] | null | undefined;
   height?: string;
   width?: string;
 }
@@ -11,7 +11,7 @@ interface ShowPhotoProps {
 const ShowPhoto = ({ height, width, images }: ShowPhotoProps) => {
   const [currentImage, setCurrentImage] = React.useState(0);
 
-  if(typeof images ==='string'){
+  if (typeof images === "string") {
     return (
       <img
         src={`https://dummyimage.com/400x400/ccc/fff&text=${images}`}
@@ -20,14 +20,13 @@ const ShowPhoto = ({ height, width, images }: ShowPhotoProps) => {
     );
   }
 
-
-  if (!images || !images.length) {
+  if (!images) {
     if (height && width) {
       return (
         <img
           src={`https://dummyimage.com/2000x2000/ccc/fff&text=No+photos`}
           alt=""
-          style={{ height: height, width: width, borderRadius:"10px" }}
+          style={{ height: height, width: width, borderRadius: "10px" }}
         />
       );
     }
@@ -40,48 +39,65 @@ const ShowPhoto = ({ height, width, images }: ShowPhotoProps) => {
   }
 
   function decrement() {
+    if (typeof images === "string" || !images) {
+      return;
+    }
     setCurrentImage((state) => {
       if (state) {
         return state - 1;
       } else {
-        return images!.length - 1;
+        return images.length - 1;
       }
     });
   }
 
   function increment() {
-    setCurrentImage((state) => (state + 1) % images!.length);
+    if (typeof images === "string" || !images) {
+      return;
+    }
+    setCurrentImage((state) => ((state + 1) % images.length) - 1);
   }
 
-  if (images.length < 2) {
-    return (
-      <div
-        className={styles.showPhotoWrapper}
-        style={{ height: height, width: width }}
-      >
-        <div className={styles.imgWrapper}>
-          <img src={images[currentImage]} alt="" className={styles.img} />
-        </div>
-      </div>
-    );
-  }
+  // if (images.length < 2) {
+  //   console.log("showphoto", images[currentImage]);
+
+  //   return (
+  //     <div
+  //       className={styles.showPhotoWrapper}
+  //       style={{ height: height, width: width }}
+  //     >
+  //       <div className={styles.imgWrapper}>
+  //         <img src={images[currentImage]} alt="" className={styles.img} />
+  //       </div>
+  //     </div>
+  //   );
+  // }
 
   return (
     <div className={styles.pageWrapper}>
-      <div className={styles.button}>
-        <LeftOutlined onClick={decrement}></LeftOutlined>
-      </div>
+      {images.length > 1 && (
+        <div className={styles.button}>
+          <LeftOutlined onClick={decrement}></LeftOutlined>
+        </div>
+      )}
       <div
         className={styles.showPhotoWrapper}
         style={{ height: height, width: width }}
       >
         <div className={styles.imgWrapper}>
-          <img src={images[currentImage]} alt="" className={styles.img} />
+          <img
+            src={images[currentImage]}
+            alt=""
+            className={styles.img}
+            style={{ width, height }}
+          />
         </div>
       </div>
-      <div className={styles.button}>
-        <RightOutlined onClick={increment} />
-      </div>{" "}
+      {images.length > 1 && (
+        <div className={styles.button}>
+          <RightOutlined onClick={increment} />
+        </div>
+      )}
     </div>
   );
 };

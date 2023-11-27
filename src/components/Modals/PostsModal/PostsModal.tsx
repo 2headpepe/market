@@ -1,14 +1,15 @@
 import React from "react";
 import Modal from "../Modal/Modal";
 import ModalProps from "../ModalTypes";
-import PostList, { PostListProps } from "../../PostList/PostList";
+import PostList from "../../PostList/PostList";
 import { ImagesState } from "../../../store/images/imagesReducer";
 import { IListings } from "../../../api/listings/types";
 
 interface PostsModalProps extends ModalProps {
-  posts: IListings|null;
+  posts: IListings|undefined;
   header?: string;
   images:ImagesState;
+  currentPosts:number;
 }
 
 const PostsModal = (props: PostsModalProps) => {
@@ -19,7 +20,7 @@ const PostsModal = (props: PostsModalProps) => {
     >
       <div>{props.header && <h1>{props.header}</h1>}</div>
       <hr />
-      <PostList posts={props.posts} images={props.images}></PostList>
+      <PostList posts={props.posts} images={props.images} currentPosts={props.currentPosts}></PostList>
     </Modal>
   );
 };
