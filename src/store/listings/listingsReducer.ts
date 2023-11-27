@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import {   IListing, IListings, IPaginationListings } from "../../api/listings/types";
+import { IListing, IPaginationListings } from "../../api/listings/types";
 
 export interface ListingsState {
   myListings: {
@@ -9,10 +9,10 @@ export interface ListingsState {
   };
   createListingErrors: string[];
   deleteListingErrors: {
-    [id:string]:string;
+    [id: string]: string;
   };
   buyListingErrors: {
-    [id:string]:string;
+    [id: string]: string;
   };
 
   userListings: {
@@ -21,20 +21,19 @@ export interface ListingsState {
       isLoading: boolean;
       error: string | null;
     };
-  }
+  };
 
   allListings: {
     listings: IPaginationListings | null;
     isLoading: boolean;
     error: string | null;
-  }
+  };
 
-  singleListing:{
+  singleListing: {
     listing: IListing | null;
     isLoading: boolean;
     error: string | null;
   };
-
 }
 
 const initialState: ListingsState = {
@@ -54,12 +53,12 @@ const initialState: ListingsState = {
     isLoading: false,
     error: null,
   },
-  singleListing:{
+  singleListing: {
     listing: null,
     isLoading: false,
     error: null,
   },
-}
+};
 
 export interface ListingsAction {
   id?: number;
@@ -71,7 +70,10 @@ export const listingsReducer = createSlice({
   name: "listings",
   initialState,
   reducers: {
-    getStart: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    getStart: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       userListings: {
         ...state.userListings,
@@ -79,9 +81,12 @@ export const listingsReducer = createSlice({
           ...state.userListings[action.payload.id!],
           isLoading: true,
         },
-      }
+      },
     }),
-    getSuccess: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    getSuccess: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       userListings: {
         ...state.userListings,
@@ -91,9 +96,12 @@ export const listingsReducer = createSlice({
           isLoading: false,
           error: null,
         },
-      }
+      },
     }),
-    getFailure: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    getFailure: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       userListings: {
         ...state.userListings,
@@ -102,7 +110,7 @@ export const listingsReducer = createSlice({
           isLoading: false,
           error: action.payload.error,
         },
-      }
+      },
     }),
     getMyStart: (state): ListingsState => ({
       ...state,
@@ -111,7 +119,10 @@ export const listingsReducer = createSlice({
         isLoading: true,
       },
     }),
-    getMySuccess: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    getMySuccess: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       myListings: {
         ...state.myListings,
@@ -120,7 +131,10 @@ export const listingsReducer = createSlice({
         error: null,
       },
     }),
-    getMyFailure: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    getMyFailure: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       myListings: {
         ...state.myListings,
@@ -128,21 +142,27 @@ export const listingsReducer = createSlice({
         error: action.payload.error!,
       },
     }),
-    createListingFailure: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    createListingFailure: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       createListingErrors: [
         ...state.createListingErrors,
         action.payload.error!,
-      ]
+      ],
     }),
     getListingStart: (state): ListingsState => ({
       ...state,
-      singleListing:{
+      singleListing: {
         ...state.singleListing,
-        isLoading:true,
-      }
+        isLoading: true,
+      },
     }),
-    getListingSuccess: (state, action: PayloadAction<IListing>): ListingsState => ({
+    getListingSuccess: (
+      state,
+      action: PayloadAction<IListing>
+    ): ListingsState => ({
       ...state,
       singleListing: {
         ...state.singleListing,
@@ -151,7 +171,10 @@ export const listingsReducer = createSlice({
         error: null,
       },
     }),
-    getListingFailure: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    getListingFailure: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       singleListing: {
         ...state.singleListing,
@@ -159,75 +182,125 @@ export const listingsReducer = createSlice({
         error: action.payload.error!,
       },
     }),
-    buyListingFailure:(state, action: PayloadAction<ListingsAction>):ListingsState => ({
+    buyListingSuccess: (
+      state,
+      action: PayloadAction<number>
+    ): ListingsState => ({
       ...state,
-      buyListingErrors: {
-        ...state.buyListingErrors,
-        [action.payload.id!]:action.payload.error
-      },
-    }),
-    deleteListingFailure:(state, action: PayloadAction<ListingsAction>):ListingsState => ({
-      ...state,
-      deleteListingErrors: {
-        ...state.deleteListingErrors,
-        [action.payload.id!]:action.payload.error
-      },
-    }),
-    getUserListingsStart: (state,action: PayloadAction<ListingsAction>): ListingsState => ({
-      ...state,
-      userListings:{
-        ...state.userListings,
-        [action.payload.id!]:{
-          ...state.userListings[action.payload.id!],
-          isLoading:true,
+      allListings:{
+        ...state.allListings,
+        listings:{
+          ...state.allListings.listings!,
+          listingResponseList:state.allListings.listings?.listingResponseList.filter((e)=>e.id!=action.payload)??[]
         }
       }
     }),
-    getUserListingsSuccess: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    buyListingFailure: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
+      ...state,
+      buyListingErrors: {
+        ...state.buyListingErrors,
+        [action.payload.id!]: action.payload.error,
+      },
+    }),
+    deleteListingSuccess: (
+      state,
+      action: PayloadAction<number>
+    ): ListingsState => ({
+        ...state,
+        myListings: {
+          ...state.myListings,
+          listings: {
+            ...state.myListings.listings!,
+            listingResponseList:
+              state.myListings.listings?.listingResponseList.filter(
+                (e) => e.id !== action.payload
+              ) ?? [],
+          },
+      }
+    }),
+    deleteListingFailure: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
+      ...state,
+      deleteListingErrors: {
+        ...state.deleteListingErrors,
+        [action.payload.id!]: action.payload.error,
+      },
+    }),
+    getUserListingsStart: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       userListings: {
         ...state.userListings,
-        [action.payload.id!]:{
+        [action.payload.id!]: {
+          ...state.userListings[action.payload.id!],
+          isLoading: true,
+        },
+      },
+    }),
+    getUserListingsSuccess: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
+      ...state,
+      userListings: {
+        ...state.userListings,
+        [action.payload.id!]: {
           ...state.userListings[action.payload.id!],
           listing: action.payload.listings!,
           isLoading: false,
           error: null,
-        }
+        },
       },
     }),
-    getUserListingsFailure: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    getUserListingsFailure: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       userListings: {
         ...state.userListings,
-        [action.payload.id!]:{
+        [action.payload.id!]: {
           ...state.userListings[action.payload.id!],
           isLoading: false,
           error: action.payload.error,
-        }
+        },
       },
     }),
     searchListingsStart: (state): ListingsState => ({
       ...state,
-      allListings:{
-        ...state.allListings,
-          isLoading:true,
-      }
-    }),
-    searchListingsSuccess: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
-      ...state,
       allListings: {
         ...state.allListings,
-          listings: action.payload.listings!,
-          isLoading: false,
-          error: null,
+        isLoading: true,
       },
     }),
-    searchListingsFailure: (state, action: PayloadAction<ListingsAction>): ListingsState => ({
+    searchListingsSuccess: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
       ...state,
       allListings: {
         ...state.allListings,
-          isLoading: false,
-          error: action.payload.error!,
+        listings: action.payload.listings!,
+        isLoading: false,
+        error: null,
+      },
+    }),
+    searchListingsFailure: (
+      state,
+      action: PayloadAction<ListingsAction>
+    ): ListingsState => ({
+      ...state,
+      allListings: {
+        ...state.allListings,
+        isLoading: false,
+        error: action.payload.error!,
       },
     }),
     // searchListingsMoreStart: (state): ListingsState => ({
@@ -277,6 +350,8 @@ export const {
   searchListingsStart,
   searchListingsSuccess,
   searchListingsFailure,
+  deleteListingSuccess,
+  buyListingSuccess
   // searchListingsMoreStart,
   // searchListingsMoreSuccess,
   // searchListingsMoreFailure

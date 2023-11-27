@@ -1,11 +1,38 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 import { Dispatch } from "@reduxjs/toolkit"
-import { OrdersAction, getActiveBuysFailure, getActiveBuysStart, getActiveBuysSuccess, getActiveSellsFailure, getActiveSellsStart, getActiveSellsSuccess, getApprovedBuysFailure, getApprovedBuysStart, getApprovedBuysSuccess, getApprovedSellsFailure, getApprovedSellsStart, getApprovedSellsSuccess, getDisapprovedBuysFailure, getDisapprovedBuysStart, getDisapprovedBuysSuccess, getDisapprovedSellsFailure, getDisapprovedSellsStart, getDisapprovedSellsSuccess } from "./ordersReducer"
+import { approveSuccess, disapproveSuccess, getActiveBuysFailure, getActiveBuysStart, getActiveBuysSuccess, getActiveSellsFailure, getActiveSellsStart, getActiveSellsSuccess, getApprovedBuysFailure, getApprovedBuysStart, getApprovedBuysSuccess, getApprovedSellsFailure, getApprovedSellsStart, getApprovedSellsSuccess, getDisapprovedBuysFailure, getDisapprovedBuysStart, getDisapprovedBuysSuccess, getDisapprovedSellsFailure, getDisapprovedSellsStart, getDisapprovedSellsSuccess } from "./ordersReducer"
 import api from "../../api";
+import { IApprove, IDisapprove } from "../../api/orders/types";
+
+
+export const disapprove = (data:IDisapprove) =>
+async (dispatch: Dispatch<any>): Promise<void> => {
+  try {
+
+    const res = (await api.orders.disapprove(data)).data;
+    dispatch(disapproveSuccess(res))
+  } catch (e: any) {
+    console.error(e)
+
+  }
+}
+export const approve = (data:IApprove) =>
+async (dispatch: Dispatch<any>): Promise<void> => {
+  try {
+
+    const res = (await api.orders.approve(data)).data;
+    dispatch(approveSuccess(res))
+
+  } catch (e: any) {
+    console.error(e)
+
+  }
+}
 
 export const getDisapprovedSells = () =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
-    dispatch(getDisapprovedSellsStart({}));
+    dispatch(getDisapprovedSellsStart());
 
     const result = (await api.orders.getDisapprovedSells()).data;
 
@@ -20,7 +47,7 @@ async (dispatch: Dispatch<any>): Promise<void> => {
 export const getDisapprovedBuys = () =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
-    dispatch(getDisapprovedBuysStart({id:-1} as OrdersAction));
+    dispatch(getDisapprovedBuysStart());
 
     const result = (await api.orders.getDisapprovedBuys()).data;
 
@@ -35,7 +62,7 @@ async (dispatch: Dispatch<any>): Promise<void> => {
 export const getApprovedSells = () =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
-    dispatch(getApprovedSellsStart({}));
+    dispatch(getApprovedSellsStart());
 
     const result = (await api.orders.getApprovedSells()).data;
 
@@ -50,7 +77,7 @@ async (dispatch: Dispatch<any>): Promise<void> => {
 export const getApprovedBuys = () =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
-    dispatch(getApprovedBuysStart({id:-1} as OrdersAction));
+    dispatch(getApprovedBuysStart());
 
     const result = (await api.orders.getApprovedBuys()).data;
 
@@ -65,9 +92,9 @@ async (dispatch: Dispatch<any>): Promise<void> => {
 export const getActiveSells = () =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
-    dispatch(getActiveSellsStart({}));
+    dispatch(getActiveSellsStart());
 
-    const result = (await api.orders.getApprovedSells()).data;
+    const result = (await api.orders.getActiveSells()).data;
 
     dispatch(getActiveSellsSuccess({listings:result}))
   } catch (e: any) {
@@ -80,9 +107,9 @@ async (dispatch: Dispatch<any>): Promise<void> => {
 export const getActiveBuys = () =>
 async (dispatch: Dispatch<any>): Promise<void> => {
   try {
-    dispatch(getActiveBuysStart({id:-1} as OrdersAction));
+    dispatch(getActiveBuysStart());
 
-    const result = (await api.orders.getApprovedBuys()).data;
+    const result = (await api.orders.getActiveBuys()).data;
 
     dispatch(getActiveBuysSuccess({listings:result}))
   } catch (e: any) {

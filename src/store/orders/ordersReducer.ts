@@ -1,6 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IPaginationOrders } from "../../api/orders/types";
-
+import { IOrderResponse, IPaginationOrders } from "../../api/orders/types";
 
 export interface OrdersState {
   disapprovedSells: {
@@ -8,7 +7,7 @@ export interface OrdersState {
     isLoading: boolean;
     error: string | null;
   };
-  disapprovedBuys:{
+  disapprovedBuys: {
     listings: IPaginationOrders | null;
     isLoading: boolean;
     error: string | null;
@@ -18,17 +17,17 @@ export interface OrdersState {
     isLoading: boolean;
     error: string | null;
   };
-  approvedBuys:{
+  approvedBuys: {
     listings: IPaginationOrders | null;
     isLoading: boolean;
     error: string | null;
   };
   activeSells: {
-    listings: IPaginationOrders| null;
+    listings: IPaginationOrders | null;
     isLoading: boolean;
     error: string | null;
   };
-  activeBuys:{
+  activeBuys: {
     listings: IPaginationOrders | null;
     isLoading: boolean;
     error: string | null;
@@ -51,7 +50,7 @@ const initialState: OrdersState = {
     isLoading: false,
     error: null,
   },
-  approvedBuys:{
+  approvedBuys: {
     listings: null,
     isLoading: false,
     error: null,
@@ -61,39 +60,45 @@ const initialState: OrdersState = {
     isLoading: false,
     error: null,
   },
-  activeBuys:{
+  activeBuys: {
     listings: null,
     isLoading: false,
     error: null,
   },
-}
+};
 
-export interface OrdersAction{
-  listings?:IPaginationOrders;
-  error?:string;
+export interface OrdersAction {
+  listings?: IPaginationOrders;
+  error?: string;
 }
 
 export const ordersReducer = createSlice({
   name: "orders",
   initialState,
   reducers: {
-    getDisapprovedBuysStart: (state,action:PayloadAction<OrdersAction>): OrdersState=> ({
+    getDisapprovedBuysStart: (state): OrdersState => ({
       ...state,
       disapprovedBuys: {
         ...state.disapprovedBuys,
         isLoading: true,
       },
     }),
-    getDisapprovedBuysSuccess: (state, action: PayloadAction<OrdersAction>): OrdersState=> ({
-        ...state,
-        disapprovedBuys: {
-          ...state.disapprovedBuys,
-          listings:action.payload.listings!,
-          isLoading: false,
-          error: null,
-        },
-      }),
-    getDisapprovedBuysFailure: (state, action: PayloadAction<OrdersAction>): OrdersState => ({
+    getDisapprovedBuysSuccess: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
+      ...state,
+      disapprovedBuys: {
+        ...state.disapprovedBuys,
+        listings: action.payload.listings!,
+        isLoading: false,
+        error: null,
+      },
+    }),
+    getDisapprovedBuysFailure: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
       ...state,
       disapprovedBuys: {
         ...state.disapprovedBuys,
@@ -101,23 +106,32 @@ export const ordersReducer = createSlice({
         error: action.payload.error!,
       },
     }),
-    getDisapprovedSellsStart: (state,action:PayloadAction<OrdersAction>): OrdersState=> ({
+    getDisapprovedSellsStart: (state): OrdersState => ({
       ...state,
       disapprovedSells: {
         ...state.disapprovedSells,
         isLoading: true,
       },
     }),
-    getDisapprovedSellsSuccess: (state, action: PayloadAction<OrdersAction>): OrdersState=> ({
+    getDisapprovedSellsSuccess: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => {
+      console.log(action)
+      return {
         ...state,
         disapprovedSells: {
           ...state.disapprovedSells,
-          listings:action.payload.listings!,
+          listings: action.payload.listings!,
           isLoading: false,
           error: null,
         },
-      }),
-    getDisapprovedSellsFailure: (state, action: PayloadAction<OrdersAction>): OrdersState => ({
+      };
+    },
+    getDisapprovedSellsFailure: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
       ...state,
       disapprovedSells: {
         ...state.disapprovedSells,
@@ -125,25 +139,81 @@ export const ordersReducer = createSlice({
         error: action.payload.error!,
       },
     }),
-
-
-    getApprovedBuysStart: (state,action:PayloadAction<OrdersAction>): OrdersState=> ({
+    disapproveSuccess: (
+      state,
+      action: PayloadAction<IOrderResponse>
+    ): OrdersState => ({
+      ...state,
+      activeBuys: {
+        ...state.activeBuys,
+        listings: {
+          ...state.activeBuys.listings!,
+          orderResponseList:
+            state.activeBuys.listings?.orderResponseList.filter(
+              (e) => e.id != action.payload.id
+            ) ?? [],
+        },
+      },
+      disapprovedBuys: {
+        ...state.disapprovedBuys,
+        listings: {
+          ...state.disapprovedBuys.listings!,
+          orderResponseList: [
+            ...(state.disapprovedBuys.listings?.orderResponseList ?? []),
+            action.payload,
+          ],
+        },
+      },
+    }),
+    approveSuccess: (
+      state,
+      action: PayloadAction<IOrderResponse>
+    ): OrdersState => ({
+      ...state,
+      activeBuys: {
+        ...state.activeBuys,
+        listings: {
+          ...state.activeBuys.listings!,
+          orderResponseList:
+            state.activeBuys.listings?.orderResponseList.filter(
+              (e) => e.id != action.payload.id
+            ) ?? [],
+        },
+      },
+      approvedBuys: {
+        ...state.approvedBuys,
+        listings: {
+          ...state.approvedBuys.listings!,
+          orderResponseList: [
+            ...(state.approvedBuys.listings?.orderResponseList ?? []),
+            action.payload,
+          ],
+        },
+      },
+    }),
+    getApprovedBuysStart: (state): OrdersState => ({
       ...state,
       approvedBuys: {
         ...state.approvedBuys,
         isLoading: true,
       },
     }),
-    getApprovedBuysSuccess: (state, action: PayloadAction<OrdersAction>): OrdersState=> ({
-        ...state,
-        approvedBuys: {
-          ...state.approvedBuys,
-          listings:action.payload.listings!,
-          isLoading: false,
-          error: null,
-        },
-      }),
-    getApprovedBuysFailure: (state, action: PayloadAction<OrdersAction>): OrdersState => ({
+    getApprovedBuysSuccess: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
+      ...state,
+      approvedBuys: {
+        ...state.approvedBuys,
+        listings: action.payload.listings!,
+        isLoading: false,
+        error: null,
+      },
+    }),
+    getApprovedBuysFailure: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
       ...state,
       approvedBuys: {
         ...state.approvedBuys,
@@ -151,23 +221,29 @@ export const ordersReducer = createSlice({
         error: action.payload.error!,
       },
     }),
-    getApprovedSellsStart: (state,action:PayloadAction<OrdersAction>): OrdersState=> ({
+    getApprovedSellsStart: (state): OrdersState => ({
       ...state,
       approvedSells: {
         ...state.approvedSells,
         isLoading: true,
       },
     }),
-    getApprovedSellsSuccess: (state, action: PayloadAction<OrdersAction>): OrdersState=> ({
-        ...state,
-        approvedSells: {
-          ...state.approvedSells,
-          listings:action.payload.listings!,
-          isLoading: false,
-          error: null,
-        },
-      }),
-    getApprovedSellsFailure: (state, action: PayloadAction<OrdersAction>): OrdersState => ({
+    getApprovedSellsSuccess: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
+      ...state,
+      approvedSells: {
+        ...state.approvedSells,
+        listings: action.payload.listings!,
+        isLoading: false,
+        error: null,
+      },
+    }),
+    getApprovedSellsFailure: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
       ...state,
       approvedSells: {
         ...state.approvedSells,
@@ -176,23 +252,29 @@ export const ordersReducer = createSlice({
       },
     }),
 
-    getActiveBuysStart: (state,action:PayloadAction<OrdersAction>): OrdersState=> ({
+    getActiveBuysStart: (state): OrdersState => ({
       ...state,
       activeBuys: {
         ...state.activeBuys,
         isLoading: true,
       },
     }),
-    getActiveBuysSuccess: (state, action: PayloadAction<OrdersAction>): OrdersState=> ({
-        ...state,
-        activeBuys: {
-          ...state.activeBuys,
-          listings:action.payload.listings!,
-          isLoading: false,
-          error: null,
-        },
-      }),
-    getActiveBuysFailure: (state, action: PayloadAction<OrdersAction>): OrdersState => ({
+    getActiveBuysSuccess: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
+      ...state,
+      activeBuys: {
+        ...state.activeBuys,
+        listings: action.payload.listings!,
+        isLoading: false,
+        error: null,
+      },
+    }),
+    getActiveBuysFailure: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
       ...state,
       activeBuys: {
         ...state.activeBuys,
@@ -200,23 +282,29 @@ export const ordersReducer = createSlice({
         error: action.payload.error!,
       },
     }),
-    getActiveSellsStart: (state,action:PayloadAction<OrdersAction>): OrdersState=> ({
+    getActiveSellsStart: (state): OrdersState => ({
       ...state,
       activeSells: {
         ...state.activeSells,
         isLoading: true,
       },
     }),
-    getActiveSellsSuccess: (state, action: PayloadAction<OrdersAction>): OrdersState=> ({
-        ...state,
-        activeSells: {
-          ...state.activeSells,
-          listings:action.payload.listings!,
-          isLoading: false,
-          error: null,
-        },
-      }),
-    getActiveSellsFailure: (state, action: PayloadAction<OrdersAction>): OrdersState => ({
+    getActiveSellsSuccess: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
+      ...state,
+      activeSells: {
+        ...state.activeSells,
+        listings: action.payload.listings!,
+        isLoading: false,
+        error: null,
+      },
+    }),
+    getActiveSellsFailure: (
+      state,
+      action: PayloadAction<OrdersAction>
+    ): OrdersState => ({
       ...state,
       activeSells: {
         ...state.activeSells,
@@ -224,7 +312,6 @@ export const ordersReducer = createSlice({
         error: action.payload.error!,
       },
     }),
-    
   },
 });
 
@@ -247,6 +334,8 @@ export const {
   getActiveSellsStart,
   getActiveSellsSuccess,
   getActiveSellsFailure,
+  approveSuccess,
+  disapproveSuccess,
 } = ordersReducer.actions;
 
 export default ordersReducer.reducer;
