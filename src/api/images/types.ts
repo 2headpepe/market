@@ -1,11 +1,25 @@
 //login
 
 export interface IGetListingImagesRequest {
-  listingsId: number[];
+  listingId: number;
 }
 
-export interface IGetListingImagesResponse {
-  [id:number]:string[];
+export interface IGetListingsImagesRequest {
+  listingId: number[];
 }
 
+export type IGetListingImagesResponse = IPostListingImageResponse[];
 
+export type IPostListingImageRequest = {
+  listingId: number;
+  path: string;
+};
+
+export interface IPostListingImageResponse {
+  id: number;
+  listingId: number;
+  path: string;
+}
+export interface IDeleteImageRequest {
+  imageId: number;
+}

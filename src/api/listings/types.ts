@@ -12,12 +12,12 @@ export interface IListing {
   title: string,
   text: string,
   categoryId: number,
-  price: 0,
-  city: string,
-  postDate: string,
+  price: number,
+  postDate: Date,
   sold: boolean,
-  userId: number
-};
+  userId: number,
+  orderId?:number;
+}
 export type IListings = IListing[];
 
 
@@ -27,7 +27,7 @@ export interface ICreateListingRequest{
   categoryId : number;
   price: number;
 }
-export type ICreateListingResponse = IListing[];
+export type ICreateListingResponse = IListing;
 
 export interface IGetListingRequest{
   id:number;

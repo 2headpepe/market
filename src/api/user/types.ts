@@ -13,3 +13,10 @@ export interface IUserProfile {
 export interface IGetUserRequest{
   id:number;
 }
+
+export interface IPatchUserRequest{
+  firstname: string,
+  lastname: string,
+  email: string,
+  password: string,
+}

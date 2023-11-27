@@ -1,7 +1,7 @@
 import { AxiosPromise } from "axios";
 import Endpoints from "../endpoints";
 import { axiosInstance } from "../instance";
-import { IGetUserRequest, IUserProfile } from "./types";
+import { IGetUserRequest, IPatchUserRequest, IUserProfile } from "./types";
 
 
 // export const getDisapprovedSells = (): AxiosPromise<IGetSellsResponse> => axiosInstance.get(Endpoints.ORDERS.DISAPPROVED_SELLS)
@@ -16,3 +16,8 @@ import { IGetUserRequest, IUserProfile } from "./types";
 export const getProfile = (): AxiosPromise<IUserProfile> => axiosInstance.get(Endpoints.USER.PROFILE)
 
 export const getUser = (params:IGetUserRequest): AxiosPromise<IUserProfile> => axiosInstance.get(Endpoints.USER.GET_USER+params.id)
+
+export const patchUser = (params:IPatchUserRequest): AxiosPromise<IUserProfile> => axiosInstance.patch(Endpoints.USER.PATCH_USER,params)
+
+export const deleteUser = (): AxiosPromise<void> => axiosInstance.post(Endpoints.USER.DELETE_USER)
+
