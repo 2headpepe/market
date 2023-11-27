@@ -8,21 +8,17 @@ import LandingPage from "./pages/LandingPage/LandingPage";
 
 import PrivateRoute from "./components/PrivateRoute/PrivateRoute";
 
-import { Provider, useSelector } from "react-redux";
+import { Provider} from "react-redux";
 import { store } from "./store";
-import { IRootState } from "./store";
 
 import "./index.css";
-import UploadPhoto from "./components/UploadPhoto/UploadPhoto";
 import ProfilePage from "./pages/ProfilePage/ProfilePage";
 import PostInfoPage from "./pages/PostInfoPage/PostInfoPage";
-import CategoryBadge from "./components/CategoryBadge/CategoryBadge";
 import AdminPage from "./pages/AdminPage/AdminPage";
 import AdminUsersPage from "./pages/AdminPage/pages/AdminUsersPage/AdminUsersPage";
 import AdminWithdrawsPage from "./pages/AdminPage/pages/AdminWithdrawsPage/AdminWithdrawsPage";
 import AdminDepositsPage from "./pages/AdminPage/pages/AdminDepositsPage/AdminDepositsPage";
 import AdminCategoriesPage from "./pages/AdminPage/pages/AdminCategoriesPage/AdminCategoriesPage";
-import Header from "./components/Header/Header";
 
 
 const root = ReactDOM.createRoot(
