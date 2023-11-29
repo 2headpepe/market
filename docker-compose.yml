@@ -3,6 +3,8 @@ version: '3'
 services:
   client-frontend:
     container_name: front
+    mem_limit: "1g"
+    mem_reservation: "512m"
     build:
       context: .
       dockerfile: Dockerfile
