@@ -69,7 +69,7 @@ const ProfileInfo = ({
       style={{ display: "flex", flexDirection: "column", alignItems: "center" }}
     >
       <img
-        src="https://damion.club/uploads/posts/2022-09/1663879174_3-damion-club-p-dora-pevitsa-oboi-instagram-3.jpg"
+        src={user.profile?.image ?? '/images/user.png'}
         alt="photo"
         className={styles.profilePhoto}
       />

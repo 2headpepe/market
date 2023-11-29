@@ -11,7 +11,6 @@ const LandingPage: React.FC = () => {
       <Header setMoneyModal={setMoneyModal} ></Header>
       <Main></Main>
       <MoneyModal modal={moneyModal} setModal={setMoneyModal} />
-      
     </div>
   );
 };
