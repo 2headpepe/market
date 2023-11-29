@@ -86,7 +86,7 @@ const Main = () => {
     if (!selected) return;
     if (selected === "0") {
       dispatch(
-        searchListings({ sortBy, categoryId: null, offset, limit, asc })
+        searchListings({ sortBy, offset, limit, asc })
       );
     } else {
       dispatch(
@@ -95,7 +95,6 @@ const Main = () => {
     }
     setCategoryId(+selected);
   };
-  console.log(filterOptions);
   return (
     <div className={styles.mainWrapper}>
       <div className={styles.sortWrapper}>
