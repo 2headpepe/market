@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { IListing, IPaginationListings } from "../../api/listings/types";
+import { IGetListingResponse, IListing, IPaginationListings } from "../../api/listings/types";
 
 export interface ListingsState {
   myListings: {
@@ -8,6 +8,7 @@ export interface ListingsState {
     error: string | null;
   };
   createListingErrors: string[];
+  createListingSuccess: number;
   deleteListingErrors: {
     [id: string]: string;
   };
@@ -43,6 +44,7 @@ const initialState: ListingsState = {
     error: null,
   },
   createListingErrors: [],
+  createListingSuccess: -1,
   deleteListingErrors: {},
   buyListingErrors: {},
 
@@ -161,15 +163,15 @@ export const listingsReducer = createSlice({
     }),
     getListingSuccess: (
       state,
-      action: PayloadAction<IListing>
+      action: PayloadAction<IGetListingResponse>
     ): ListingsState => ({
       ...state,
-      singleListing: {
+      singleListing:{
         ...state.singleListing,
-        listing: action.payload!,
-        isLoading: false,
-        error: null,
+        listing:action.payload,
+        isLoading:false,
       },
+      
     }),
     getListingFailure: (
       state,
@@ -253,7 +255,7 @@ export const listingsReducer = createSlice({
         ...state.userListings,
         [action.payload.id!]: {
           ...state.userListings[action.payload.id!],
-          listing: action.payload.listings!,
+          listings: action.payload.listings!,
           isLoading: false,
           error: null,
         },
@@ -272,6 +274,13 @@ export const listingsReducer = createSlice({
           error: action.payload.error,
         },
       },
+    }),
+    createListingSuccess: (
+      state,
+      action: PayloadAction<number>
+    ): ListingsState => ({
+      ...state,
+      createListingSuccess:action.payload,
     }),
     searchListingsStart: (state): ListingsState => ({
       ...state,
@@ -351,7 +360,8 @@ export const {
   searchListingsSuccess,
   searchListingsFailure,
   deleteListingSuccess,
-  buyListingSuccess
+  buyListingSuccess,
+  createListingSuccess
   // searchListingsMoreStart,
   // searchListingsMoreSuccess,
   // searchListingsMoreFailure

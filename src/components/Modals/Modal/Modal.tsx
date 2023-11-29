@@ -12,9 +12,10 @@ interface ModalProps {
     bottom?: string;
     position?: "absolute";
   };
+  height?:string;
 }
 
-const Modal = ({ modal, setModal, children, position }: ModalProps) => {
+const Modal = ({ modal, setModal, children, position,height }: ModalProps) => {
   function onClick(event: React.MouseEvent) {
     if (
       event.target instanceof HTMLElement &&
@@ -32,7 +33,7 @@ const Modal = ({ modal, setModal, children, position }: ModalProps) => {
         >
           <div
             className="Modal--content"
-            style={{ ...position }}
+            style={{ ...position,minHeight:height }}
           >
             {children}
           </div>

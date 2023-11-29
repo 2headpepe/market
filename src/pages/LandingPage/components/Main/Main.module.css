@@ -1,10 +1,12 @@
 .sortWrapper {
   display: flex;
+  /* flex-direction: column; */
   gap: 10px;
   align-items: center;
   position: absolute;
   right: 50px;
-  top: 150px;
+  top: 5vh;
+
 }
 
 .filterWrapper {
@@ -14,4 +16,18 @@
   position: absolute;
   right: 50px;
   top: 200px;
+}
+
+.mainWrapper{
+  position: relative;
+}
+
+.label{
+  margin-right: 20px;
+}
+
+.filterSelect,
+.sortSelect{
+  width: 150px;
+
 }

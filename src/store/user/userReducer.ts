@@ -1,7 +1,7 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
 import { IUserProfile } from "../../api/user/types";
 
-export interface AuthState {
+export interface UserState {
   profileData: {
     profile: IUserProfile | null;
     isLoading: boolean;
@@ -11,10 +11,18 @@ export interface AuthState {
     profile: IUserProfile | null;
     isLoading: boolean;
     error: string | null;
+  };
+  allUsers: {
+    [id: string]: {
+      find(arg0: (user: import("../../api/admin/types").IUser) => boolean): unknown;
+      profile: IUserProfile | null;
+      isLoading: boolean;
+      error: string | null;
+    };
   };
 }
 
-const initialState: AuthState = {
+const initialState: UserState = {
   profileData: {
     profile: null,
     isLoading: false,
@@ -25,20 +33,24 @@ const initialState: AuthState = {
     isLoading: false,
     error: null,
   },
-}
+  allUsers: {},
+};
 
 export const userReducer = createSlice({
   name: "user",
   initialState,
   reducers: {
-    loadProfileStart: (state): AuthState => ({
+    loadProfileStart: (state): UserState => ({
       ...state,
       profileData: {
         ...state.profileData,
         isLoading: true,
       },
     }),
-    loadProfileSuccess: (state, action: PayloadAction<IUserProfile>): AuthState => ({
+    loadProfileSuccess: (
+      state,
+      action: PayloadAction<IUserProfile>
+    ): UserState => ({
       ...state,
       profileData: {
         ...state.profileData,
@@ -47,7 +59,7 @@ export const userReducer = createSlice({
         error: null,
       },
     }),
-    loadProfileFailure: (state, action: PayloadAction<string>): AuthState => ({
+    loadProfileFailure: (state, action: PayloadAction<string>): UserState => ({
       ...state,
       profileData: {
         ...state.profileData,
@@ -55,14 +67,24 @@ export const userReducer = createSlice({
         error: action.payload,
       },
     }),
-    loadUserStart: (state): AuthState => ({
+    loadUserStart: (state, action: PayloadAction<number>): UserState => ({
       ...state,
       userData: {
         ...state.userData,
         isLoading: true,
       },
+      allUsers: {
+        ...state.allUsers,
+        [action.payload]: {
+          ...state.allUsers[action.payload],
+          isLoading: true,
+        },
+      },
     }),
-    loadUserSuccess: (state, action: PayloadAction<IUserProfile>): AuthState => ({
+    loadUserSuccess: (
+      state,
+      action: PayloadAction<IUserProfile>
+    ): UserState => ({
       ...state,
       userData: {
         ...state.userData,
@@ -70,8 +92,15 @@ export const userReducer = createSlice({
         isLoading: false,
         error: null,
       },
+      allUsers: {
+        ...state.allUsers,
+        [action.payload.id]: {
+          ...state.allUsers[action.payload.id],
+          profile: action.payload,
+        },
+      },
     }),
-    loadUserFailure: (state, action: PayloadAction<string>): AuthState => ({
+    loadUserFailure: (state, action: PayloadAction<string>): UserState => ({
       ...state,
       userData: {
         ...state.userData,
@@ -86,8 +115,9 @@ export const {
   loadProfileStart,
   loadProfileSuccess,
   loadProfileFailure,
-  loadUserStart,loadUserSuccess,
-  loadUserFailure
+  loadUserStart,
+  loadUserSuccess,
+  loadUserFailure,
 } = userReducer.actions;
 
 export default userReducer.reducer;

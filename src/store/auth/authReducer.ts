@@ -1,5 +1,5 @@
 import { createSlice, PayloadAction } from "@reduxjs/toolkit";
-import { ILoginResponse} from "../../api/auth/types";
+import { ILoginResponse, IRegisterResponse} from "../../api/auth/types";
 
 export interface AuthState {
   authData: {
@@ -7,6 +7,7 @@ export interface AuthState {
     role:"ADMIN"|"USER"|null;
     isLoading: boolean;
     error: string | null;
+    regError: string | null;
   };
 
 }
@@ -17,6 +18,7 @@ const initialState: AuthState = {
     role:null,
     isLoading: false,
     error: null,
+    regError: null,
   },
 
 }
@@ -30,6 +32,7 @@ export const authReducer = createSlice({
       authData: {
         ...state.authData,
         isLoading: true,
+        regError:null,
       },
     }),
     loginSuccess: (state, action: PayloadAction<ILoginResponse>): AuthState => ({
@@ -55,15 +58,23 @@ export const authReducer = createSlice({
       authData: {
         ...state.authData,
         isLoading: true,
+        error:null,
       },
     }),
-    registerSuccess: (state): AuthState => state,
+    registerSuccess: (state,action:PayloadAction<IRegisterResponse>): AuthState => ({
+      ...state,
+      authData:{
+        ...state.authData,
+        isLoading:false,
+        accessToken:action.payload.access_token,
+      }
+    }),
     registerFailure: (state, action: PayloadAction<string>): AuthState => ({
       ...state,
       authData: {
         ...state.authData,
         isLoading: false,
-        error: action.payload,
+        regError: action.payload,
       },
     }),
     logoutSuccess: (): AuthState => initialState,

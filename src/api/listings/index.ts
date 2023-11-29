@@ -38,7 +38,7 @@ export const deleteListing = (
 export const getUserListings = (
   data: IGetUserListingsRequest
 ): AxiosPromise<IGetListingsResponse> =>
-  axiosInstance.get(Endpoints.LISTINGS.USER_LISTINGS + data.id);
+  axiosInstance.get(Endpoints.LISTINGS.USER_LISTINGS + data.userId);
 
 export const searchListings = (
   data: ISearchListingsRequest
@@ -46,7 +46,6 @@ export const searchListings = (
   let query = "?";
   // let e: keyof typeof data;
   for (const e of ["categoryId", "sortBy", "asc", "offset", "limit"]) {
-    console.log(e);
     if (
       data[e as keyof typeof data] === undefined ||
       data[e as keyof typeof data] === null
@@ -58,7 +57,6 @@ export const searchListings = (
       query += e + "=" + data[e as keyof typeof data];
     }
   }
-  console.log(query, data);
   return axiosInstance.get(
     Endpoints.LISTINGS.SEARCH_LISTINGS + (query === "?" ? "" : query)
   );
@@ -68,8 +66,8 @@ export const getMyListings = (
 ): AxiosPromise<IGetListingsResponse> =>
   axiosInstance.get(
     Endpoints.LISTINGS.MY_LISTINGS +
-      "?offset=" +
-      params.offset +
-      "&limit=" +
-      params.limit
+    "?offset=" +
+    params.offset +
+    "&limit=" +
+    params.limit
   );

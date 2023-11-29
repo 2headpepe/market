@@ -13,7 +13,6 @@ export const loginUser =
 
         const res = await api.auth.login(data)
         // const res = {data:{accessToken:"234"}}
-        // console.log(res.data['access_token'])
 
         localStorage.setItem('token',res.data['access_token']);
 
@@ -33,10 +32,9 @@ export const registerUser =
       try {
         dispatch(registerStart())
 
-        const res = await api.auth.register(data)
+        const res = (await api.auth.register(data)).data
         // const res = {data:{accessToken:"234"}}
-        // console.log(res.data['access_token'])
-        dispatch(registerSuccess());
+        dispatch(registerSuccess(res));
 
         // const loginData = {email:data.email,password:data.password};
 

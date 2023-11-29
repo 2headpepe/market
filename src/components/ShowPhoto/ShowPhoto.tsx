@@ -43,7 +43,7 @@ const ShowPhoto = ({ height, width, images }: ShowPhotoProps) => {
       return;
     }
     setCurrentImage((state) => {
-      if (state) {
+      if (state !== 0) {
         return state - 1;
       } else {
         return images.length - 1;
@@ -55,23 +55,14 @@ const ShowPhoto = ({ height, width, images }: ShowPhotoProps) => {
     if (typeof images === "string" || !images) {
       return;
     }
-    setCurrentImage((state) => ((state + 1) % images.length) - 1);
+    setCurrentImage((state) => {
+      if (state === images.length - 1) {
+        return 0;
+      } else {
+        return state + 1;
+      }
+    });
   }
-
-  // if (images.length < 2) {
-  //   console.log("showphoto", images[currentImage]);
-
-  //   return (
-  //     <div
-  //       className={styles.showPhotoWrapper}
-  //       style={{ height: height, width: width }}
-  //     >
-  //       <div className={styles.imgWrapper}>
-  //         <img src={images[currentImage]} alt="" className={styles.img} />
-  //       </div>
-  //     </div>
-  //   );
-  // }
 
   return (
     <div className={styles.pageWrapper}>

@@ -38,6 +38,8 @@ const Endpoints = {
     DELETE_WITHDRAW: "/api/admin/withdraws/",
     GET_DEPOSITS: "/api/admin/deposits",
     DELETE_DEPOSITS: "/api/admin/deposits/",
+    DELETE_LISTING:"/api/admin/listings/",
+    DELETE_REVIEW:"/api/admin/reviews"
   },
   DEPOSIT: "/api/deposits",
   WITHDRAW: "/api/withdraws",
@@ -51,6 +53,11 @@ const Endpoints = {
     DELETE_USER: "/api/users",
     PATCH_USER: "/api/users"
   },
+  REVIEWS:{
+    GET_REVIEWS:"/api/reviews",
+    POST_REVIEW:"/api/reviews",
+    GET_MY_REVIEW:"/api/reviews",
+  }
 };
 
 export default Endpoints;

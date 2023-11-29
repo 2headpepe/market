@@ -1,4 +1,4 @@
-export interface IPaginationParams{
-    offset?:number;
-    limit?:number;
+export interface IPaginationParams {
+  offset?: number;
+  limit?: number;
 }

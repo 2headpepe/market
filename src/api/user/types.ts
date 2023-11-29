@@ -7,7 +7,8 @@ export interface IUserProfile {
   registrationDate: Date,
   balance: number,
   rating: number
-  phoneNumber?:string;
+  phone:string;
+  image:string
 }
 
 export interface IGetUserRequest{
@@ -19,4 +20,6 @@ export interface IPatchUserRequest{
   lastname: string,
   email: string,
   password: string,
+  phone:string,
+  image?:string
 }

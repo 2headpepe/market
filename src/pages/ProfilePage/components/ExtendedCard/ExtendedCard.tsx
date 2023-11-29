@@ -32,7 +32,6 @@ const ExtendedCard = ({
     setModal((state) => !state);
   }
 
-  console.log('extend',listings && listings.length )
   return (
     <>
       {listings && listingsId !== null ? (
@@ -67,6 +66,11 @@ const ExtendedCard = ({
               image={Empty.PRESENTED_IMAGE_SIMPLE}
               imageStyle={{ width: "20vw", height: "20vw" }}
               description={<div style={{ fontSize: "20px" }}>No data</div>}
+              style={{
+                display: "flex",
+                alignItems: "center",
+                flexDirection: "column",
+              }}
             />
           )}
         </div>

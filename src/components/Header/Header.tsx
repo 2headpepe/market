@@ -3,7 +3,7 @@ import styles from "./Header.module.css";
 import Search, { SearchProps } from "antd/es/input/Search";
 import { Link, useNavigate } from "react-router-dom";
 import MoneyModal from "../Modals/MoneyModal/MoneyModal";
-import { Button } from "antd";
+import { Button, message } from "antd";
 import { useSelector } from "react-redux";
 import { logoutUser } from "../../store/auth/actionCreators";
 import { IRootState, useAppDispatch } from "../../store";
@@ -15,6 +15,7 @@ interface HeaderProps {
   showMoney?: boolean;
   showInfo?: boolean;
   title?: string;
+  setMoneyModal?: Function;
 }
 
 const Header = ({
@@ -22,67 +23,57 @@ const Header = ({
   showSearch = true,
   showMoney = true,
   showInfo = true,
+  setMoneyModal,
   title,
 }: HeaderProps) => {
-
   const dispatch = useAppDispatch();
   useEffect(() => {
     dispatch(getProfile());
   }, []);
 
-
-
-  const onSearch: SearchProps["onSearch"] = (value, _e, info) =>
-    console.log(info?.source, value);
-
-  const [moneyModal, setMoneyModal] = React.useState(false);
-
   const user = useSelector(
     (state: IRootState) => state.user.profileData.profile
   );
 
-
   const navigate = useNavigate();
 
   function handleModal() {
-    setMoneyModal((modal) => !modal);
+    if (setMoneyModal) {
+      setMoneyModal((modal) => !modal);
+    }
   }
   function logoutHandle() {
     dispatch(logoutUser());
     navigate("/login");
-
   }
+  const [messageApi, contextHolder] = message.useMessage();
   return (
     <nav className={styles.NavBar}>
+      {contextHolder}
       <Link
         to="../"
         className={styles.left}
         style={{ opacity: showTitle ? 1 : 0 }}
       >
-        <h1>{title ?? 'MegaMarket'}</h1>
+        <h1>{title ?? "MegaMarket"}</h1>
       </Link>
 
-      <Search
-        className={styles.search}
-        onSearch={onSearch}
-        placeholder="Search"
-        style={{ opacity: showSearch ? 1 : 0 }}
-      ></Search>
-
-      {user ?
+      {user ? (
         <div className={styles.infoWrapper}>
-          <div
+          <Button
             className={styles.icon}
             onClick={handleModal}
-            style={{ opacity: showMoney ? 1 : 0 }}
+            style={{
+              opacity: showMoney ? 1 : 0,
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+            }}
           >
             <div className="primary2">{user.balance}$</div>
-          </div>
+          </Button>
 
-          <Link
-            to="../profile"
-            style={{ opacity: showInfo ? 1 : 0 }}
-          >
+          <Link to="../profile" style={{ opacity: showInfo ? 1 : 0 }}>
             <div className={styles.info}>
               <div>
                 <div className="primary">{user.firstname}</div>
@@ -90,19 +81,18 @@ const Header = ({
               </div>
               <img
                 className={styles.photo}
-                src="https://38s.musify.club/img/68/22744618/58256306.jpg"
+                src={user.image ?? "images/user.png"}
                 alt="icon"
                 height={48}
+                width={48}
               />
             </div>
           </Link>
           <Button onClick={logoutHandle}>LogOut</Button>
         </div>
-        : <h1>Loading</h1>}
-      <MoneyModal
-        modal={moneyModal}
-        setModal={setMoneyModal}
-      />
+      ) : (
+        <h1>Loading</h1>
+      )}
     </nav>
   );
 };

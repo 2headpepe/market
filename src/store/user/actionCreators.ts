@@ -1,5 +1,5 @@
 import { Dispatch } from "@reduxjs/toolkit";
-import { loadProfileFailure, loadProfileStart, loadProfileSuccess, loadUserFailure, loadUserStart, loadUserSuccess } from "./authReducer";
+import { loadProfileFailure, loadProfileStart, loadProfileSuccess, loadUserFailure, loadUserStart, loadUserSuccess } from "./userReducer";
 
 import api from "../../api";
 import { IGetUserRequest, IPatchUserRequest, IUserProfile } from "../../api/user/types";
@@ -24,7 +24,7 @@ export const getProfile = () =>
   export const getUser = (data:IGetUserRequest) =>
   async (dispatch: Dispatch<any>): Promise<void> => {
     try {
-      dispatch(loadUserStart())
+      dispatch(loadUserStart(data.id))
 
       const res = await api.user.getUser(data);
 

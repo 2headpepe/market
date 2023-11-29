@@ -9,7 +9,6 @@ export const getCategories =
     async (dispatch: Dispatch<any>): Promise<void> => {
       try {
         dispatch(getCategoriesStart())
-        console.log(1);
 
         const res = await api.category.getCategories();
 

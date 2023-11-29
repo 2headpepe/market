@@ -5,9 +5,7 @@ import {
   getListingImagesStart,
   getListingImagesSuccess,
 } from "./imagesReducer";
-import {
-  IGetListingsImagesRequest
-} from "../../api/images/types";
+import { IGetListingsImagesRequest } from "../../api/images/types";
 import api from "../../api";
 import { postListingImageApi } from "../../api/images";
 import { axiosInstance } from "../../clear_api/instance";
@@ -29,10 +27,10 @@ export const getListingImages =
         getListingImagesSuccess({
           listingsId: params.listingId,
           images: json.reduce((a, v) => {
-            if(!v?.length){
+            if (!v?.length) {
               return a;
             }
-            return { ...a, [v[0].listingId]: v   };
+            return { ...a, [v[0].listingId]: v };
           }, {}),
         })
       );
@@ -48,47 +46,67 @@ export const getListingImages =
       //     "https://static.nike.com/a/images/t_prod_ss/w_640,c_limit,f_auto/7f29caac-0e3f-4d6e-a603-35b5d66b468b/air-jordan-4-red-cement-dh6927-161-release-date.jpg",
       //   ];
       // }
-      // console.log(listingsId)
 
       // dispatch(getListingImagesSuccess({ listingsId, images: [] }));
     } catch (e: any) {
       console.error(e);
 
-      dispatch(getListingImagesFailure({ listingsId:params.listingId, error: e.message }));
+      dispatch(
+        getListingImagesFailure({
+          listingsId: params.listingId,
+          error: e.message,
+        })
+      );
     }
   };
 
-
-export const postListingImage =  (params: {listingId:number,images:File[]}) =>
-async (): Promise<void> => {
+export const postImage = async (image:File): Promise<string> => {
   try {
-    console.log('params',params);
-    const responses = params.images.map((photo: File) => {
-      console.log("start");
-      console.log(photo);
-      const formData = new FormData();
-      formData.append("file", photo);
-      formData.append("upload_preset", "ml_default");
-      formData.append("api_key", "266274934912378");
+    const formData = new FormData();
+    formData.append("file", image);
+    formData.append("upload_preset", "ml_default");
+    formData.append("api_key", "266274934912378");
 
-      const res = axiosInstance.post(
-        "https://api.cloudinary.com/v1_1/dmgz7ezzp/image/upload",formData
-      );
-      return res;
-    });
-    console.log(responses);
-    const result = await Promise.all(responses);
-    const json = result.map((e)=> e.data);
-    const secure_urls = json.map((e)=>e['secure_url']);
-
-    console.log(json,secure_urls);
-    secure_urls.forEach(async (e)=> {
-      await postListingImageApi({listingId:params.listingId,path:e});
-    })
-    // dispatch(postListingImage({listingId:params.listingId,images:}));
+    const res = await axiosInstance.post(
+      "https://api.cloudinary.com/v1_1/dmgz7ezzp/image/upload",
+      formData
+    );
+    const secure_url = res.data["secure_url"];
+    return secure_url;
   } catch (e: any) {
     console.error(e);
 
     // dispatch(getListingImagesFailure({ listingsId:params.listingId, error: e.message }));
   }
 };
+
+export const postListingImage =
+  (params: { listingId: number; images: File[] }) =>
+  async (): Promise<void> => {
+    try {
+      const responses = params.images.map((photo: File) => {
+        const formData = new FormData();
+        formData.append("file", photo);
+        formData.append("upload_preset", "ml_default");
+        formData.append("api_key", "266274934912378");
+
+        const res = axiosInstance.post(
+          "https://api.cloudinary.com/v1_1/dmgz7ezzp/image/upload",
+          formData
+        );
+        return res;
+      });
+      const result = await Promise.all(responses);
+      const json = result.map((e) => e.data);
+      const secure_urls = json.map((e) => e["secure_url"]);
+
+      secure_urls.forEach(async (e) => {
+        await postListingImageApi({ listingId: params.listingId, path: e });
+      });
+      // dispatch(postListingImage({listingId:params.listingId,images:}));
+    } catch (e: any) {
+      console.error(e);
+
+      // dispatch(getListingImagesFailure({ listingsId:params.listingId, error: e.message }));
+    }
+  };

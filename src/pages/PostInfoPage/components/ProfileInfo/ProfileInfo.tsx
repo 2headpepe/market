@@ -2,7 +2,7 @@ import { Button } from "antd";
 import Star from "../../../../components/Star/Star";
 import styles from "./ProfileInfo.module.css";
 import React from "react";
-import { IRootState} from "../../../../store";
+import { IRootState } from "../../../../store";
 import { useSelector } from "react-redux";
 
 const TwoLineInfo = ({
@@ -26,33 +26,38 @@ const ProfileInfo = ({
   createPost,
   editProfile,
   id,
+  openListings,
 }: {
   createPost?: ProfileInfoProps;
   editProfile?: boolean;
-  id: number|null;
+  id: number | null;
+  openListings:Function
 }) => {
   // const dispatch = useAppDispatch();
   const user = useSelector((state: IRootState) => state.user.userData);
-  if(!id){
-    return <></>
+  if (!id) {
+    return <></>;
   }
 
-
-  if(user.error){
-    return <div>Error</div>
+  if (user.error) {
+    return <div>Error</div>;
   }
 
-  if(user.isLoading){
-    return <div>Loading...</div>
+  if (user.isLoading) {
+    return <div>Loading...</div>;
   }
-  
+
   const info = user ? (
     [
+      { main: "First name", secondary: user.profile!.firstname },
+      {
+        main: "Last name",
+        secondary: user.profile!.lastname,
+      },
       { main: "Email", secondary: user.profile!.email },
-      // { main: "Password", secondary: user.password },
       {
         main: "Phone number",
-        secondary: user?.profile?.phoneNumber ? user.profile!.phoneNumber : "...",
+        secondary: user.profile!.phone,
       },
     ].map((e) => <TwoLineInfo key={e.main} {...e} />)
   ) : (
@@ -84,11 +89,13 @@ const ProfileInfo = ({
         <Star rating={user ? user.profile!.rating : 5}></Star>
 
         <hr />
-
         {info}
+        <hr className={styles.hr} />
+        <div style={{ display:"flex",alignItems: "center",justifyContent:"center",marginTop:"20px" }}>
+          <Button type="primary" onClick={()=>openListings()}>Reviews</Button>
+        </div>
       </div>
 
-      <hr className={styles.hr} />
       <div className={styles.buttonWrapper}>
         {createPost && (
           <Button type="primary" onClick={createPost}>

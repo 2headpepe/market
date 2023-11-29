@@ -19,14 +19,14 @@
 }
 
 .blockWrapper, .blockWrapperEdit {
-  margin-top: 24px;
+  margin-top: 14px;
   display: flex;
   flex-direction: column;
   gap:5px
 }
 
 .blockWrapperEdit {
-  gap: 10px;
+  gap: 4px;
 }
 
 .buttonWrapper {

@@ -2,35 +2,54 @@ import { useNavigate } from "react-router-dom";
 import ShowPhoto from "../ShowPhoto/ShowPhoto";
 import React from "react";
 import "./Cards.css";
-import { Button } from "antd";
+import { Button, Empty, Input } from "antd";
 import { useAppDispatch } from "../../store";
 import { deleteListing } from "../../store/listings/actionCreators";
 import { approve, disapprove } from "../../store/orders/actionCreators";
 import { IListing } from "../../api/listings/types";
-
+import { Modal as AntdModal } from "antd";
+import { postReview } from "../../store/reviews/actionCreators";
+import { Rating } from "@mui/material";
 export interface CardProps {
-  posts: IListing;
+  posts: IListing | undefined;
   images: string[] | null | undefined;
   listingId: number;
-  currentPosts: number;
+  currentPosts?: number;
+  handleDeletePost?: Function;
 }
 const Card = (props: CardProps) => {
-  const { images, posts, currentPosts, listingId } = props;
-
-  console.log("card", images);
+  const { images, posts, currentPosts, listingId, handleDeletePost } = props;
+  if (!posts)
+    return (
+      <Empty
+        image={Empty.PRESENTED_IMAGE_SIMPLE}
+        imageStyle={{ width: "20vw", height: "20vw" }}
+        description={<div style={{ fontSize: "20px" }}>No data</div>}
+        style={{
+          display: "flex",
+          alignItems: "center",
+          flexDirection: "column",
+        }}
+      />
+    );
   const { title, postDate, text, price, id } = posts;
   const navigate = useNavigate();
 
   function clickHandle({ event, id }: { event: React.MouseEvent; id: number }) {
-    console.log(event);
     if (
       event.target instanceof HTMLElement &&
       event.target.className !== "button" &&
-      !["Delete","Approve","Disapprove"].includes(event.target.innerText)
+      !["Delete", "Approve", "Disapprove", "Delete product"].includes(
+        event.target.innerText
+      ) &&
+      !posts?.orderStatus
     ) {
       navigate("/" + id.toString());
     }
   }
+  const [review, setReview] = React.useState("");
+  const [rating, setRating] = React.useState<number | null>(null);
+  const [isModalOpen, setIsModalOpen] = React.useState(false);
   const dispatch = useAppDispatch();
   return (
     <div
@@ -69,9 +88,8 @@ const Card = (props: CardProps) => {
           <Button
             type="primary"
             onClick={() => {
-              dispatch(approve({
-                orderId: posts.orderId!
-              }))
+              setIsModalOpen(true);
+              // posts.
             }}
           >
             Approve
@@ -79,17 +97,68 @@ const Card = (props: CardProps) => {
         )}
         {currentPosts === 5 && (
           <Button
-          style={{marginLeft:"10px"}}
+            style={{ marginLeft: "10px" }}
             onClick={() => {
-              dispatch(disapprove({
-                orderId: posts.orderId!
-              }))
+              dispatch(
+                disapprove({
+                  orderId: posts.orderId!,
+                })
+              );
             }}
           >
             Disapprove
           </Button>
         )}
+        {handleDeletePost !== undefined && (
+          <Button
+            danger
+            style={{ marginLeft: "10px" }}
+            onClick={() => handleDeletePost(listingId)}
+          >
+            Delete product
+          </Button>
+        )}
       </div>
+      <AntdModal
+        title="Congratulation"
+        open={isModalOpen}
+        onOk={() => {
+          dispatch(
+            approve({
+              orderId: posts.orderId!,
+            })
+          );
+          dispatch(
+            postReview({
+              sellerId: posts.sellerId!,
+              text: review,
+              rating: rating ?? 5,
+            })
+          );
+          setIsModalOpen(false)
+        }}
+        onCancel={() => {
+          setReview("");
+          setIsModalOpen(false);
+        }}
+      >
+        <p>Please leave review about product and seller</p>
+        <Input
+          value={review}
+          onChange={(e: any) => {
+            setReview(e.target.value);
+          }}
+        ></Input>
+        <Rating
+          name="half"
+          defaultValue={5}
+          precision={0.5}
+          size="large"
+          onChange={(event, newValue) => {
+            setRating(newValue);
+          }}
+        />
+      </AntdModal>
     </div>
   );
 };

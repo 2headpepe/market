@@ -3,7 +3,7 @@ import styles from "./Main.module.css";
 import PostList from "../../../../components/PostList/PostList";
 import { IRootState, useAppDispatch } from "../../../../store";
 import { useSelector } from "react-redux";
-import { Select } from "antd";
+import { Pagination, Select } from "antd";
 import { getCategories } from "../../../../store/category/actionCreators";
 import { ICategory } from "../../../../api/category/types";
 import { searchListings } from "../../../../store/listings/actionCreators";
@@ -60,7 +60,6 @@ const Main = () => {
       );
     }
   }, [posts]);
-
   const onChangeSort = (
     selected: "price up" | "postDate up" | "price down" | "postDate down" | null
   ) => {
@@ -88,36 +87,35 @@ const Main = () => {
     );
   };
 
-  function handleLoadMore() {
-    setOffset((prev: number) => prev + 1);
-  }
-  console.log(posts)
   return (
     <div className={styles.mainWrapper}>
-      <div className={styles.sortWrapper}>
-        <label htmlFor="sortSelect">Sort:</label>
-        <Select
-          options={sortOptions}
-          onChange={onChangeSort}
-          defaultValue={defaultSort.value as ISortOptions}
-          className={styles.sortSelect}
-          style={{ width: "150px" }}
-        />
-      </div>
-      <div className={styles.filterWrapper}>
-        <label htmlFor="filterSelect">Category:</label>
-        <Select
-          options={filterOptions ?? []}
-          onChange={onChangeFilter}
-          defaultValue={filterOptions ? filterOptions[0].value : null}
-          className={styles.filterSelect}
-          id="filterSelect"
-          style={{ width: "150px" }}
-        />
-      </div>
+      {(posts?.listings?.listingResponseList?.length ?? 0) > 0 && (
+        <div className={styles.sortWrapper}>
+          <div style={{display:"flex",flexDirection:"column", alignItems:"center", gap:"20px"}}>
+            {/* <label htmlFor="sortSelect" className={styles.label}>Sort:</label> */}
+            <Select
+              options={sortOptions}
+              onChange={onChangeSort}
+              defaultValue={defaultSort.value as ISortOptions}
+              className={styles.sortSelect}
+            />
+          </div>
+          <div style={{display:"flex",flexDirection:"column", alignItems:"center", gap:"20px"}}>
+            {/* <label htmlFor="filterSelect" className={styles.label}>Category:</label> */}
+            <Select
+              options={filterOptions ?? []}
+              onChange={onChangeFilter}
+              defaultValue={filterOptions ? filterOptions[0].value : null}
+              className={styles.filterSelect}
+              id="filterSelect"
+            />
+          </div>
+        </div>
+      )}
+
       <div className={styles.postListWrapper}>
         {posts.error ??
-          (!posts || posts.isLoading || !posts.listings? (
+          (!posts || posts.isLoading || !posts.listings ? (
             <Loading />
           ) : (
             <PostList
@@ -126,11 +124,14 @@ const Main = () => {
             ></PostList>
           ))}
       </div>
-      {!posts.error && posts.listings && (posts?.listings.totalPages ?? 0) > offset + 1 && (
-        <p onClick={handleLoadMore} style={{ color: "grey" }}>
-          Load more
-        </p>
-      )}
+      <Pagination
+        onChange={(page) => {
+          setOffset(page - 1);
+        }}
+        defaultCurrent={1}
+        total={(posts?.listings?.totalPages ?? 1) * 10}
+        className="pagination2"
+      />
     </div>
   );
 };

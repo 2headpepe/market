@@ -13,6 +13,7 @@ export interface IUser{
   balance: number,
   rating: number,
   role:'ADMIN'|'USER'
+  image:string
 }
 
 export interface ICreateCategoryRequest{
@@ -25,7 +26,7 @@ export interface IDeleteCategoryRequest{
 
 
 export interface IDeleteUserRequest{
-  id:number;
+  userId:number;
 }
 
 export interface IDeleteWithdrawRequest{
@@ -56,4 +57,12 @@ export type IDeposit = IWithdraw;
 export interface IDeleteDepositRequest{
   depositId:number;
   approved:boolean;
+}
+
+export interface IDeleteListingRequest{
+  listingId:number;
+}
+
+export interface IDeleteReviewRequest{
+  reviewId:number;
 }

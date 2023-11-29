@@ -1,36 +1,51 @@
 import Card from "../Cards";
 import styles from "./PostList.module.css";
 import { ImagesState } from "../../store/images/imagesReducer";
-import Loading from "../Loading/Loading";
 import { IListing } from "../../api/listings/types";
+import { Empty } from "antd";
 
 export interface PostListProps {
-  posts:
-    IListing[]|undefined;
+  posts: IListing[] | undefined;
   images: ImagesState;
-  currentPosts:number;
+  currentPosts?: number;
+  handleDeletePost?: Function;
 }
 
-const PostList = ({ posts, images, currentPosts}: PostListProps) => {
+const PostList = ({
+  posts,
+  images,
+  currentPosts,
+  handleDeletePost,
+}: PostListProps) => {
   return (
-    <div className={styles.listWrapper}>
+    <div>
       {posts && posts.length > 0 ? (
-        posts.map((e) => {
-          return (
-            <>
-                <div className={styles.postWrapper} key={e.id}>
-                  <Card
-                    posts={e}
-                    images={images[e.id]?.images?.map((img) => img.path)}
-                    listingId={e.id}
-                    currentPosts={currentPosts}
-                  ></Card>
-                </div>
-            </>
-          );
-        })
+        <div className={styles.listWrapper}>
+          {posts.map((e) => {
+            return (
+              <div className={styles.postWrapper} key={e.id}>
+                <Card
+                  posts={e}
+                  images={images[e.id]?.images?.map((img) => img.path)}
+                  listingId={e.id}
+                  currentPosts={currentPosts}
+                  handleDeletePost={handleDeletePost}
+                ></Card>
+              </div>
+            );
+          })}
+        </div>
       ) : (
-        <div>Нет постов</div>
+        <Empty
+          image={Empty.PRESENTED_IMAGE_SIMPLE}
+          imageStyle={{ width: "20vw", height: "20vw" }}
+          description={<div style={{ fontSize: "20px" }}>No data</div>}
+          style={{
+            display: "flex",
+            alignItems: "center",
+            flexDirection: "column",
+          }}
+        />
       )}
     </div>
   );

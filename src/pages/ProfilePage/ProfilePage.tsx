@@ -20,6 +20,8 @@ import { IPaginationOrders } from "../../api/orders/types";
 import Loading from "../../components/Loading/Loading";
 import PostsModal from "../../components/Modals/PostsModal/PostsModal";
 import { getListingImages } from "../../store/images/actionCreators";
+import MoneyModal from "../../components/Modals/MoneyModal/MoneyModal";
+import { message } from "antd";
 const posts = [
   "Your products",
   "Your approved sells",
@@ -43,6 +45,7 @@ const ProfilePage = () => {
   const [createPostModal, setCreatePostModal] = React.useState(false);
   const [currentPosts, setCurrentPosts] = React.useState<number>(-1);
   const [postsModal, setPostsModal] = React.useState(false);
+  const [moneyModal, setMoneyModal] = React.useState(false);
 
   const limit = 10;
 
@@ -73,17 +76,19 @@ const ProfilePage = () => {
   const myActiveSells = useSelector(
     (state: IRootState) => state.orders.activeSells
   );
+  const createListingState = useSelector((state:IRootState)=>state.listings.createListingSuccess);
+
   useEffect(() => {
     dispatch(
       methods[currentPosts + 1]({ offset: offset[currentPosts + 1], limit })
     );
   }, [currentPosts]);
 
+  
   useEffect(() => {
     const listingId = (
       currentPosts !== -1 ? list[currentPosts] : myListings
     )?.listings?.listingResponseList.map((e) => e.id);
-    console.log(listingId ?? "12312");
     dispatch(getListingImages({ listingId: listingId ?? [] }));
   }, [
     myListings,
@@ -93,6 +98,8 @@ const ProfilePage = () => {
     myDisapprovedSells,
     myActiveBuys,
     myActiveSells,
+    postsModal,
+    createListingState
   ]);
 
   function parseOrders(
@@ -128,8 +135,9 @@ const ProfilePage = () => {
           price: order.sum,
           postDate: order.listingPostDate,
           sold: order.listingSold,
-          userId: order.sellerId,
+          sellerId: order.sellerId,
           orderId: order.id,
+          orderStatus: order.status,
         })),
       },
     };
@@ -143,11 +151,19 @@ const ProfilePage = () => {
     parseOrders(myDisapprovedBuys),
     parseOrders(myActiveBuys),
   ];
+  const [messageApi, contextHolder] = message.useMessage();
 
-  console.log(currentPosts,list[currentPosts]!)
-    return (
+  return (
     <div className={styles.profilePageWrapper}>
-      <Header showTitle showSearch showMoney showInfo></Header>
+      {contextHolder}
+      <Header
+        showTitle
+        showSearch={false}
+        showMoney
+        showInfo
+        moneyModal={moneyModal}
+        setMoneyModal={setMoneyModal}
+      ></Header>
       <div className={styles.profileWrapper}>
         <ProfileInfo
           createPost={() => {
@@ -157,6 +173,7 @@ const ProfilePage = () => {
           currentPosts={currentPosts}
           posts={posts}
           editProfile
+          deleteProfile
         />
       </div>
 
@@ -181,21 +198,28 @@ const ProfilePage = () => {
           ))}
       </div>
       <PostsModal
-        posts={
-          currentPosts !== -1
-            ? list[currentPosts]!.listings?.listingResponseList
-            : myListings?.listings?.listingResponseList
-        }
+        posts={currentPosts !== -1
+          ? list[currentPosts]!.listings?.listingResponseList
+          : myListings?.listings?.listingResponseList}
         images={images}
         modal={postsModal}
         setModal={() => setPostsModal((state: boolean) => !state)}
         header={posts[currentPosts + 1]}
         currentPosts={currentPosts}
-      ></PostsModal>
+        totalPages={((currentPosts!==-1 ? list[currentPosts]?.listings?.totalPages : myListings?.listings?.totalPages)??1)*10} 
+        setOffset={(val:number)=>{setOffset((state)=>{
+          const newOffset = [...state];
+          newOffset[currentPosts+1] = val;
+          return newOffset;
+        })}}      
+        ></PostsModal>
       <CreatePost
         modal={createPostModal}
         setModal={setCreatePostModal}
+        offset={offset[currentPosts + 1]}
+        limit={limit}
       ></CreatePost>
+      <MoneyModal modal={moneyModal} setModal={setMoneyModal} message={message} />
     </div>
   );
 };

@@ -7,9 +7,8 @@ import { useSelector } from "react-redux";
 import { IRootState, useAppDispatch } from "../../../store";
 import { ICategory } from "../../../api/category/types";
 import { getCategories } from "../../../store/category/actionCreators";
-import { createListing} from "../../../store/listings/actionCreators";
+import { createListing } from "../../../store/listings/actionCreators";
 import Loading from "../../Loading/Loading";
-import { getMyListings } from "../../../api/listings";
 
 interface IPostInfo {
   title: string;
@@ -17,9 +16,11 @@ interface IPostInfo {
   categoryId: number;
   price: number;
 }
-const CreatePost = (props: ModalProps) => {
+
+const CreatePost = (props: ModalProps & { offset: number; limit: number }) => {
   const [photoModal, setPhotoModal] = React.useState(false);
   const [postInfo, setPostInfo] = React.useState<IPostInfo | null>(null);
+
   const categories = useSelector(
     (state: IRootState) => state.category.categoriesData
   );
@@ -31,10 +32,8 @@ const CreatePost = (props: ModalProps) => {
   const [categoryId, setCategoryId] = React.useState("");
 
   const onChangeCategory = (selected: string | null) => {
-    console.log(selected);
     setCategoryId(selected!);
   };
-
 
   useEffect(() => {
     if (categoryOptions) {
@@ -53,32 +52,30 @@ const CreatePost = (props: ModalProps) => {
     props.setModal(false);
     setPhotoModal(true);
   }
-  const [input, setInput] = React.useState<File | null>(null);
+  const [input, setInput] = React.useState<File[]>([]);
   function handleFileChange(event: React.FormEvent<HTMLInputElement>) {
     const target = event.target as HTMLInputElement & {
       files: FileList;
     };
-    setInput(target.files[0]);
-    // postImage(target.files[0])
+    setInput([]);
+    for (let i = 0; i < target.files.length; i++) {
+      const file = target.files.item(i);
+      if (file) {
+        setInput((state) => [...state, file]);
+      }
+    }
   }
   function finish() {
     setPhotoModal(false);
-    console.log(input);
 
     dispatch(
       createListing(
         { ...postInfo!, categoryId: +categoryId, price: +postInfo!.price },
-        input ? [input] : null
+        input.length ? input : null
       )
-    ).then(()=>{
+    ).then(() => {
       props.setModal(false);
-    })
-    //   // if(input){
-    //     // dispatch()
-    //   // }
-
-    //   // dispatch(getMyListings())
-    // })
+    });
   }
   return (
     <>
@@ -99,7 +96,7 @@ const CreatePost = (props: ModalProps) => {
             </Form.Item>
             <Form.Item label="Category">
               {categories.error ??
-                (categories.isLoading || !categoryOptions? (
+                (categories.isLoading || !categoryOptions ? (
                   <Loading />
                 ) : (
                   <Select
@@ -123,10 +120,16 @@ const CreatePost = (props: ModalProps) => {
       <Modal modal={photoModal} setModal={setPhotoModal}>
         <div className={styles.createPostWrapper}>
           <h1>Upload photo</h1>
+          <div className={styles["input-file-row"]}>
           <hr />
-          <input type="file" onChange={handleFileChange} />
+            <span className={styles["input-file-list"]}>{input.map((e)=><div>{e.name}</div>)}</span>
+            <hr />
+            <label className={styles["input-file"]} style={{display:"flex", alignItems:"center", width:"100%",flexDirection:"column"}}>
+              <input type="file" multiple onChange={handleFileChange} accept="image/png, image/gif, image/jpeg"/>
+              <div className={"ant-btn css-dev-only-do-not-override-1adbn6x ant-btn-default"}>Choose files</div>
+            </label>
+          </div>
           {/* <UploadPhoto fileList={fileList} setFileList={setFileList}></UploadPhoto> */}
-          <hr />
           <Button type="primary" onClick={finish}>
             Create post
           </Button>

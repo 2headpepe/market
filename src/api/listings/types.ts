@@ -15,8 +15,9 @@ export interface IListing {
   price: number,
   postDate: Date,
   sold: boolean,
-  userId: number,
   orderId?:number;
+  sellerId?:number;
+  orderStatus?:string;
 }
 export type IListings = IListing[];
 
@@ -36,7 +37,11 @@ export type IGetListingResponse = IListing;
 export type IBuyListingRequest = IGetListingRequest;
 export type IBuyListingRespose = IListing;
 export type IDeleteListingRequest = IBuyListingRequest;
-export type IGetUserListingsRequest = IGetListingRequest;
+export type IGetUserListingsRequest = {
+  userId:number;
+  offset?:number;
+  limit?:number;
+}
 
 export interface ISearchListingsRequest{
   categoryId?:number|null;

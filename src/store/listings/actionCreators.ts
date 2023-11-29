@@ -4,6 +4,7 @@ import {
   buyListingFailure,
   buyListingSuccess,
   createListingFailure,
+  createListingSuccess,
   deleteListingFailure,
   deleteListingSuccess,
   getListingFailure,
@@ -44,7 +45,8 @@ export const createListing =
           })
         )
       }
-      
+      console.log(res)
+      dispatch(createListingSuccess(res.id));
     } catch (e: any) {
       console.error(e);
 
@@ -57,8 +59,7 @@ export const getListing =
     try {
       dispatch(getListingStart());
 
-      const result = await (await api.listings.getListing(data)).data;
-
+      const result = (await api.listings.getListing(data)).data;
       dispatch(getListingSuccess(result));
     } catch (e: any) {
       console.error(e);
@@ -96,11 +97,11 @@ export const getUserListings =
   (data: IGetUserListingsRequest) =>
   async (dispatch: Dispatch<any>): Promise<void> => {
     try {
-      dispatch(getUserListingsStart(data));
+      dispatch(getUserListingsStart({id:data.userId}));
 
       const result = (await api.listings.getUserListings(data)).data;
 
-      dispatch(getUserListingsSuccess({ listings: result }));
+      dispatch(getUserListingsSuccess({ id:data.userId,listings: result }));
     } catch (e: any) {
       console.error(e);
 
@@ -114,7 +115,6 @@ export const searchListings =
       dispatch(searchListingsStart());
 
       const result = (await api.listings.searchListings(data)).data;
-      console.log(result);
       dispatch(searchListingsSuccess({ listings: result }));
     } catch (e: any) {
       console.error(e);

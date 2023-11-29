@@ -1,10 +1,16 @@
-import { Button, Input, List } from "antd";
+import { Button, Input, List, message } from "antd";
 import Star from "../../../../components/Star/Star";
 import styles from "./ProfileInfo.module.css";
 import React, { useEffect } from "react";
 import { IRootState, useAppDispatch } from "../../../../store";
 import { useSelector } from "react-redux";
-import { getProfile, patchUser } from "../../../../store/user/actionCreators";
+import {
+  deleteUser,
+  getProfile,
+  patchUser,
+} from "../../../../store/user/actionCreators";
+import { PlusOutlined } from "@ant-design/icons";
+import { postImage } from "../../../../store/images/actionCreators";
 
 const TwoLineInfo = ({
   main,
@@ -44,12 +50,14 @@ const TwoLineInfo = ({
 type ProfileInfoProps = React.MouseEventHandler;
 
 const ProfileInfo = ({
+  deleteProfile,
   createPost,
   editProfile,
   currentPosts,
   setCurrentPosts,
   posts,
 }: {
+  deleteProfile?: boolean;
   createPost?: ProfileInfoProps;
   editProfile?: boolean;
   currentPosts: number;
@@ -64,27 +72,28 @@ const ProfileInfo = ({
   );
 
   const [userInfo, setUserInfo] = React.useState({
-    firstname: user?.firstname ?? '',
-    lastname: user?.lastname ?? '',
-    email: user?.email ?? '',
+    firstname: user?.firstname ?? "",
+    lastname: user?.lastname ?? "",
+    email: user?.email ?? "",
     password: "",
+    phone: user?.phone ?? "",
   });
   useEffect(() => {
     dispatch(getProfile());
   }, []);
 
   useEffect(() => {
-    if(!user) return
+    if (!user) return;
     setUserInfo((state) => ({
       ...state,
       firstname: user.firstname,
       lastname: user.lastname,
       email: user.email,
+      phone: user.phone,
     }));
   }, [user]);
   function setValues(newVal: string, val: string) {
     setUserInfo((state) => ({ ...state, [val]: newVal }));
-    console.log(userInfo);
   }
   const info = user ? (
     [
@@ -107,24 +116,61 @@ const ProfileInfo = ({
         value: "password",
         setValues,
       },
-      // {
-      //   main: "Password",
-      //   value: "password",
-      //   secondary: user?.phoneNumber ? user?.phoneNumber : "...",
-      //   setValues
-      // },
+      {
+        main: "Phone number",
+        secondary: userInfo.phone,
+        value: "phone",
+        setValues,
+      },
     ].map((e) => <TwoLineInfo key={e.main} {...e} editMode={editMode} />)
   ) : (
     <h1>Loading</h1>
   );
+  const [file, setFile] = React.useState<File | null>(null);
+  const [messageApi, contextHolder] = message.useMessage();
 
   function handleEditClick() {
     if (editMode) {
+      if (userInfo.password.length < 8) {
+        message.error(
+          { content: "Password must contain a minimum of 8 characters" },
+          2,
+          () => {
+            return;
+          }
+        );
+      } else {
+        setEditMode((state) => !state);
+        message.success(
+          { content: "Success" },
+          2,
+          () => {
+            return;
+          }
+        );
+      }
       if (!user) return;
-      dispatch(patchUser(userInfo));
-      console.log(userInfo);
+      if (file) {
+        postImage(file).then((url) => {
+          dispatch(patchUser({ ...userInfo, image: url })).then(() => {
+            dispatch(getProfile());
+          });
+        });
+      } else {
+        dispatch(patchUser({ ...userInfo })).then(() => {
+          dispatch(getProfile());
+        });
+      }
+    } else {
+      setEditMode((state) => !state);
     }
-    setEditMode((state) => !state);
+  }
+
+  function handleSetFile(e: React.FormEvent<HTMLInputElement>) {
+    const target = e.target as HTMLInputElement & {
+      files: FileList;
+    };
+    setFile(target.files[0]);
   }
   return (
     <div
@@ -134,13 +180,38 @@ const ProfileInfo = ({
         alignItems: "center",
         justifyContent: "space-around",
         width: "100%",
+        height: "100%",
       }}
     >
-      <img
-        src="https://damion.club/uploads/posts/2022-09/1663879174_3-damion-club-p-dora-pevitsa-oboi-instagram-3.jpg"
-        alt="photo"
-        className={styles.profilePhoto}
-      />
+      {contextHolder}
+      {editMode ? (
+        <div>
+          <label
+            htmlFor={"inputFile"}
+            className={styles.profilePhoto}
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "center",
+              border: "0.5px solid grey",
+            }}
+          >
+            <PlusOutlined />
+          </label>
+          <input
+            type="file"
+            id="inputFile"
+            style={{ display: "none" }}
+            onChange={handleSetFile}
+          />
+        </div>
+      ) : (
+        <img
+          src={user?.image ?? "images/user.png"}
+          alt="photo"
+          className={styles.profilePhoto}
+        />
+      )}
 
       <div className={styles.infoWrapper}>
         <div className={styles.mainInfoWrapper}>
@@ -153,42 +224,74 @@ const ProfileInfo = ({
               ? new Date(user?.registrationDate).toDateString()
               : "_"}
           </div>
+          <div className="primary" style={{ marginTop: "10px" }}>
+            {user?.firstname + " " + user?.lastname}
+          </div>
         </div>
         <Star rating={user ? user.rating : 5}></Star>
 
         <hr />
+        {editMode &&
+        <div>
+          {info}
 
-        {info}
+          <hr className={styles.hr} />
+        </div>}
       </div>
 
+      {!editMode && (
+        <List
+          style={{ width: "100%" }}
+          size="small"
+          dataSource={posts}
+          renderItem={(item, index) => (
+            <List.Item
+              style={{
+                padding: "8px 0px",
+                width: "100%",
+                color: currentPosts + 1 === index ? "#1677ff" : "black",
+              }}
+              onClick={() => setCurrentPosts(index - 1)}
+            >
+              {item}
+            </List.Item>
+          )}
+        />
+      )}
+
       <hr className={styles.hr} />
-      <List
-        style={{ width: "100%" }}
-        size="small"
-        dataSource={posts}
-        renderItem={(item, index) => (
-          <List.Item
-            style={{
-              padding: "8px 0px",
-              width: "100%",
-              color: currentPosts + 1 === index ? "#1677ff" : "black",
-            }}
-            onClick={() => setCurrentPosts(index - 1)}
-          >
-            {item}
-          </List.Item>
-        )}
-      />
-      <hr className={styles.hr} />
-      <div className={styles.buttonWrapper}>
+      <div className={styles.buttonWrapper} style={{ marginTop: "10px" }}>
         {createPost && !editMode && (
-          <Button type="primary" onClick={createPost}>
+          <Button
+            type="primary"
+            onClick={createPost}
+            style={{ width: "100px" }}
+          >
             Add post
           </Button>
         )}
+      </div>
+      <div className={styles.buttonWrapper} style={{ marginTop: "10px" }}>
         {editProfile && (
-          <Button onClick={handleEditClick}>
+          <Button onClick={handleEditClick} style={{ width: "100px" }}>
             {editMode ? "Confirm" : "Edit profile"}
+          </Button>
+        )}
+      </div>
+      <div
+        className={styles.buttonWrapper}
+        style={{ marginTop: "60px", position: "relative", height: "100%" }}
+      >
+        {deleteProfile && !editMode && (
+          <Button
+            type="primary"
+            onClick={() => {
+              dispatch(deleteUser());
+            }}
+            danger
+            style={{ width: "100px", position: "absolute", bottom: "1vh" }}
+          >
+            Delete user
           </Button>
         )}
       </div>

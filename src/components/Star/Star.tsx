@@ -11,7 +11,7 @@ const Star = ({ rating }: StarProps) => {
       <StarTwoTone key={i} twoToneColor="gold" className={styles.star} />
     );
   }
-  for (let i = rating; i <= 5; ++i) {
+  for (let i = rating+1; i <= 5; ++i) {
     stars[i] = <StarTwoTone key={i} twoToneColor="lightgrey" className={styles.star} />;
   }
   return <div className={styles.ratingWrapper}>{stars}</div>;

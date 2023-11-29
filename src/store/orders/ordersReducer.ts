@@ -117,7 +117,6 @@ export const ordersReducer = createSlice({
       state,
       action: PayloadAction<OrdersAction>
     ): OrdersState => {
-      console.log(action)
       return {
         ...state,
         disapprovedSells: {
