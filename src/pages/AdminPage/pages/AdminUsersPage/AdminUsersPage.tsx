@@ -157,7 +157,7 @@ const AdminUsersPage = () => {
                 setOffset={(page) => {
                   setOffset((state) => ({ ...state, products: page }));
                 }}
-                totalPages={(posts[currentUser]?.listings.totalPages??0)*10}
+                totalPages={(posts[currentUser]?.listings.totalPages??1)*10}
               />
             )))}
       </>
@@ -239,7 +239,7 @@ const AdminUsersPage = () => {
                 <Pagination
                   onChange={(page) => setOffset(page)}
                   defaultCurrent={1}
-                  total={(reviews[currentUser].reviews?.totalPages??0)*10}
+                  total={(reviews[currentUser].reviews?.totalPages??1)*10}
                   className="pagination2"
                 />
               </Modal>
@@ -250,8 +250,8 @@ const AdminUsersPage = () => {
           setOffset((state) => ({ ...state, users: page - 1 }));
         }}
         defaultCurrent={1}
-        total={(users?.totalPages ?? 0)*10}
-        className="pagination"
+        total={(users?.totalPages ?? 1)*10}
+        className="pagination2"
       />
     </div>
   );

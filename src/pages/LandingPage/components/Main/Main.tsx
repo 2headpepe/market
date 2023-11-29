@@ -27,11 +27,14 @@ const Main = () => {
 
   const filterOptions =
     categories && !categories.error && categories.categories
-      ? categories.categories.map((e: ICategory) => ({
-          value: e.id.toString(),
-          label: e.name,
-        }))
-      : null;
+      ? [
+          { value: "0", label: "All categories" },
+          ...categories.categories.map((e: ICategory) => ({
+            value: e.id.toString(),
+            label: e.name,
+          })),
+        ]
+      : [{ value: "0", label: "All categories" }];
 
   const defaultSort = { value: "postDate down", label: "By date ↓" };
   const [sortBy, setSortBy] = React.useState<"price" | "postDate">(
@@ -81,37 +84,55 @@ const Main = () => {
   };
   const onChangeFilter = (selected: string | null) => {
     if (!selected) return;
+    if (selected === "0") {
+      dispatch(
+        searchListings({ sortBy, categoryId: null, offset, limit, asc })
+      );
+    } else {
+      dispatch(
+        searchListings({ sortBy, categoryId: +selected!, offset, limit, asc })
+      );
+    }
     setCategoryId(+selected);
-    dispatch(
-      searchListings({ sortBy, categoryId: +selected!, offset, limit, asc })
-    );
   };
-
+  console.log(filterOptions);
   return (
     <div className={styles.mainWrapper}>
-      {(posts?.listings?.listingResponseList?.length ?? 0) > 0 && (
-        <div className={styles.sortWrapper}>
-          <div style={{display:"flex",flexDirection:"column", alignItems:"center", gap:"20px"}}>
-            {/* <label htmlFor="sortSelect" className={styles.label}>Sort:</label> */}
-            <Select
-              options={sortOptions}
-              onChange={onChangeSort}
-              defaultValue={defaultSort.value as ISortOptions}
-              className={styles.sortSelect}
-            />
-          </div>
-          <div style={{display:"flex",flexDirection:"column", alignItems:"center", gap:"20px"}}>
-            {/* <label htmlFor="filterSelect" className={styles.label}>Category:</label> */}
-            <Select
-              options={filterOptions ?? []}
-              onChange={onChangeFilter}
-              defaultValue={filterOptions ? filterOptions[0].value : null}
-              className={styles.filterSelect}
-              id="filterSelect"
-            />
-          </div>
+      <div className={styles.sortWrapper}>
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          {/* <label htmlFor="sortSelect" className={styles.label}>Sort:</label> */}
+          <Select
+            options={sortOptions}
+            onChange={onChangeSort}
+            defaultValue={defaultSort.value as ISortOptions}
+            className={styles.sortSelect}
+          />
         </div>
-      )}
+        <div
+          style={{
+            display: "flex",
+            flexDirection: "column",
+            alignItems: "center",
+            gap: "20px",
+          }}
+        >
+          {/* <label htmlFor="filterSelect" className={styles.label}>Category:</label> */}
+          <Select
+            options={filterOptions ?? []}
+            onChange={onChangeFilter}
+            defaultValue={""}
+            className={styles.filterSelect}
+            id="filterSelect"
+          />
+        </div>
+      </div>
 
       <div className={styles.postListWrapper}>
         {posts.error ??

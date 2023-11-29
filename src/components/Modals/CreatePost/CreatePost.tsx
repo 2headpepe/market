@@ -32,14 +32,9 @@ const CreatePost = (props: ModalProps & { offset: number; limit: number }) => {
   const [categoryId, setCategoryId] = React.useState("");
 
   const onChangeCategory = (selected: string | null) => {
+    console.log(selected)
     setCategoryId(selected!);
   };
-
-  useEffect(() => {
-    if (categoryOptions) {
-      setCategoryId(categoryOptions[0].value);
-    }
-  }, [categoryOptions]);
 
   const dispatch = useAppDispatch();
 
@@ -65,9 +60,13 @@ const CreatePost = (props: ModalProps & { offset: number; limit: number }) => {
       }
     }
   }
+
   function finish() {
     setPhotoModal(false);
-
+    if(!categoryOptions) return;
+    if(categoryId===''){
+      setCategoryId(categoryOptions[0].value)
+    }
     dispatch(
       createListing(
         { ...postInfo!, categoryId: +categoryId, price: +postInfo!.price },
