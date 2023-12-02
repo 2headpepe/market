@@ -1,3 +1,5 @@
+const baseURL = 'http://nedomarket.ru:8003';
+
 const Endpoints = {
   AUTH: {
     LOGIN: "/api/auth/authenticate",
